@@ -10,7 +10,7 @@ export async function timeout(ms: number): Promise<void> {
 	});
 }
 
-export function exception(error: unknown) {
+export function markErrorAsHandled(error: unknown) {
 	return new ManagedError(error);
 }
 

@@ -5,7 +5,7 @@
 	import Button from './Button.svelte';
 	import ModalIcon from './ModalIcon.svelte';
 	import dedent from 'dedent';
-	import { exception } from '$lib/util.js';
+	import { markErrorAsHandled } from '$lib/util.js';
 
 	let {
 		states,
@@ -70,19 +70,19 @@
 			disabled = true;
 			let result = true;
 			try {
-				if ("loadingScreenTitle" in realAction) {
+				if ("loadingScreenMode" in realAction) {
 					// yeah we really have to duplicate them because TypeScript will not be happy if we don't
 					if (realAction.loadingScreenMode === "indeterminate") {
 						result = (await block({
 							type: "loading",
-							title: realAction.loadingScreenTitle,
+							// title: realAction.loadingScreenTitle,
 							mode: realAction.loadingScreenMode,
 							task: realAction.onclick,
 						})) ?? true
 					} else if (realAction.loadingScreenMode === "determinate") {
 						result = (await block({
 							type: "loading",
-							title: realAction.loadingScreenTitle,
+							// title: realAction.loadingScreenTitle,
 							mode: realAction.loadingScreenMode,
 							task: realAction.onclick,
 						})) ?? true
@@ -102,7 +102,7 @@
 					realAction.possibleErrors.length && 
 					realAction.possibleErrors.some((c) => error instanceof c)
 				) {
-					error = exception(error);
+					error = markErrorAsHandled(error);
 				}
 				if (realAction.closeOnError) {
 					await animateClose();

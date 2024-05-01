@@ -5,6 +5,35 @@ export const modals: ModalState<any>[] = $state([]);
 
 export type ModalState<T> = PredefinedModal<T> | CustomModal<T> | LoadingStateImpl;
 
+export type ModalAction<T> = {
+	text: string;
+	returns?: T;
+	primary?: boolean;
+	destructive?: boolean;
+	closeOnError?: boolean;
+	/**
+	 * A list of `constructor`s, the instances of each represents an error that can be safely ignored.
+	 *
+	 * For example, if you expect your `onclick` handler to throw an `AxiosError`, which can be safely ignored without any cleanup, you can add `AxiosError` to this array.
+	 * **An error message will still be shown to the user**, but it won't be an *unhandled* error.
+	 */
+	possibleErrors?: { new (): Error }[];
+} & (
+	| {
+			loadingScreenMode: 'determinate';
+			onclick: (loadingStates: LoadingState) => boolean | void | Promise<boolean | void>;
+	  }
+	| {
+			loadingScreenMode: 'indeterminate';
+			onclick: (
+				loadingStates: Omit<LoadingState, 'step' | 'setNumberOfSteps'>
+			) => boolean | void | Promise<boolean | void>;
+	  }
+	| {
+			onclick?: () => boolean | void | Promise<boolean | void>;
+	  }
+)
+
 export type PredefinedModal<T> = {
 	type: 'error' | 'ok' | 'confirm' | 'warning';
 	/**
@@ -85,42 +114,7 @@ export type PredefinedModal<T> = {
 	 * })
 	 * ```
 	 */
-	actions: Exclude<
-		(
-			| ({
-					text: string;
-					returns?: T;
-					primary?: boolean;
-					destructive?: boolean;
-					closeOnError?: boolean;
-					/**
-					 * A list of `constructor`s, the instances of each represents an error that can be safely ignored.
-					 *
-					 * For example, if you expect your `onclick` handler to throw an `AxiosError`, which can be safely ignored without any cleanup, you can add `AxiosError` to this array.
-					 * **An error message will still be shown to the user**, but it won't be an *unhandled* error.
-					 */
-					possibleErrors?: { new (): Error }[];
-			  } & (
-					| {
-							loadingScreenTitle: string;
-							loadingScreenMode: 'determinate';
-							onclick: (loadingStates: LoadingState) => boolean | void | Promise<boolean | void>;
-					  }
-					| {
-							loadingScreenTitle: string;
-							loadingScreenMode: 'indeterminate';
-							onclick: (
-								loadingStates: Omit<LoadingState, 'step' | 'setNumberOfSteps'>
-							) => boolean | void | Promise<boolean | void>;
-					  }
-					| {
-							onclick?: () => boolean | void | Promise<boolean | void>;
-					  }
-			  ))
-			| string
-		)[],
-		[]
-	>;
+	actions: Exclude<(ModalAction<T> | string)[], []>;
 	__resolve?: (ret: T) => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	__reject?: (reason?: any) => void;
@@ -299,6 +293,7 @@ export type LoadingState = {
 	};
 	log(str: string): void;
 	clearLog(): void;
+	setTitle: (title: string) => void;
 	setNumberOfSteps: (total: number) => void;
 	/**
 	 * *Asynchronously* parse a markdown-formatted text to html, sanitize it, and render it directly as the description.
@@ -313,12 +308,12 @@ export type LoadingStateImpl = Omit<LoadingModal<unknown>, 'task'> & {
 	totalSteps: number;
 	logs: string[];
 	text?: string;
+	title: string;
 	cancel?: () => Promise<void>;
 	animateClose?: () => Promise<void>;
 };
 export type LoadingModal<T> = {
 	type: 'loading';
-	title: string;
 } & (
 	| {
 			/**
@@ -383,6 +378,7 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 	//
 	const states: LoadingStateImpl & LoadingState = $state({
 		...config,
+		title: "Loading",
 		logs: [] as string[],
 		text: undefined as string | undefined,
 		animateClose: undefined,
@@ -393,14 +389,18 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 		clearLog() {
 			this.logs = [];
 		},
+		setTitle(title) {
+			this.title = title;
+		},
 		async setDescription(markdown) {
 			const [marked, { default: DOMPurify }] = await Promise.all([
 				import('marked'),
 				import('dompurify')
 			]);
+			const t = this.mode === "determinate" ? `(${Math.ceil(this.progress.completedSteps + this.progress.completedPortion)}/${this.totalSteps}) ` : "";
 			this.text = DOMPurify.sanitize(
 				await marked.parse(
-					`(${Math.ceil(this.progress.completedSteps + this.progress.completedPortion)}/${this.totalSteps}) ${markdown}`
+					t.concat(markdown)
 				)
 			);
 		},
@@ -458,5 +458,145 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 		await states.animateClose?.();
 		const t = modals.findIndex((v) => v === states);
 		if (t !== undefined) modals.splice(t, 1);
+	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export module modal {
+	export class ModalBuilder<R> {
+		constructor(public type: PredefinedModal<unknown>['type'], public __title: string = "", public __md: string = "", public __actions: ModalAction<R>[] = []) {}
+		title(text: string) { this.__title = text; return this; }
+		content(md: string) { this.__md = md; return new ActionBuilder_Start<R>(this) }
+	}
+	export class ActionBuilder_Start<R> {
+		constructor(public __parent: ModalBuilder<R>) {}
+		action(text: string): ActionBuilder<R | undefined>;
+		action(text: string, returns: R): ActionBuilder<R>;
+		action(text: string, returns?: R) {
+			const a = {
+				text,
+				returns
+			}
+			this.__parent.__actions.push(a)
+			return new ActionBuilder<R>(this.__parent, a);
+		}
+		async show(): Promise<R> {
+			return await modal({
+				type: this.__parent.type,
+				md: this.__parent.__md,
+				title: this.__parent.__title,
+				actions: this.__parent.__actions,
+			})
+		}
+	}
+	export class ActionBuilder<R> extends ActionBuilder_Start<R> {
+		constructor(public __parent: ModalBuilder<R>, private __action: ModalAction<R>) { super(__parent) }
+		primary(defaultsToTrue?: boolean) { this.__action.primary = defaultsToTrue ?? true; return this; }
+		destructive(defaultsToTrue?: boolean) { this.__action.destructive = defaultsToTrue ?? true; return this; }
+		onclick(handler: () => boolean | void | Promise<boolean | void>): ActionBuilder_Handler<R> {
+			if ("loadingScreenMode" in this.__action) throw new Error(`unexpected "loadingScreenMode" in this._action`)
+			this.__action.onclick = handler;
+			return new ActionBuilder_Handler(this.__parent, this.__action)
+		}
+		/**
+		 * Specify that a loading screen should be shown when this action is invoked. You will provide
+		 * 
+		 * @returns a builder for you to provide possible error handling mechanics, or add another action.
+		 */
+		withDeterminateLoadingScreen(onclick: (states: LoadingState) => Promise<boolean | void>) {
+			// we have two choices:
+			// 1. use any (bad)
+			// 2. i)   remove this._action from this.parent.actions
+			//    ii)  swap this._action with a new one
+			//    iii) push the new action into this.parent.actions (worse)
+			//
+			// therefore...
+			//
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(this.__action as any).loadingScreenMode = "determinate"
+			this.__action.onclick = onclick;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return new ActionBuilder_Handler(this.__parent, this.__action as any)
+		}
+		/**
+		 * Specify that a loading screen should be shown when this action is invoked. You will provide
+		 * 
+		 * @returns a builder for you to provide possible error handling mechanics, or add another action.
+		 */
+		withIndeterminateLoadingScreen(onclick: (states: Omit<LoadingState, 'step' | 'setNumberOfSteps'>) => Promise<boolean | void>) {
+			// we have two choices:
+			// 1. use any (bad)
+			// 2. i)   remove this._action from this.parent.actions
+			//    ii)  swap this._action with a new one
+			//    iii) push the new action into this.parent.actions (worse)
+			//
+			// therefore...
+			//
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(this.__action as any).loadingScreenMode = "indeterminate"
+			this.__action.onclick = onclick;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return new ActionBuilder_Handler(this.__parent, this.__action as any)
+		}
+	}
+	export class ActionBuilder_Handler<R> extends ActionBuilder_Start<R> {
+		constructor(public __parent: ModalBuilder<R>, public __action: Omit<ModalAction<R>, "onclick" | "loadingScreenTitle" | "loadingScreenMode"> & { onclick?: (arg?: unknown) => boolean | void | Promise<boolean | void> }) { super(__parent) }
+		/**
+		 * If the handler throws an error, ***transform*** the error and return it.
+		 * If you do not wish to handle the error, return nothing.
+		 * **If you do not wish to display an error to the user, return `null`.**
+		 * 
+		 * ## Example
+		 * This `catch` handler ignores *all* error without displaying *any* error message (and the user won't know anything is wrong)
+		 * ```ts
+		 * await modal.builder("confirm")
+		 * 	// ... other config
+		 * 	// ignore all error
+		 * 	.catch((_) => null)
+		 * ```
+		 * The following `catch` handler marks `CanceledError` as handled, so the user will know that the request has been cancelled.
+		 * ```ts
+		 * await modal.builder("confirm")
+		 * 	// ... other config
+		 * 	// marks `CanceledError` as handled
+		 * 	.catch((e) => {
+		 * 		if (e instanceof CanceledError) return markErrorAsHandled(e);
+		 * 	})
+		 * ```
+		 */
+		catch(rethrow: (e: unknown) => unknown | Promise<unknown>) {
+			const fn = this.__action.onclick;
+			this.__action.onclick = async (arg?: unknown) => {
+				try {
+					return await fn?.(arg)
+				} catch (e) {
+					const transformed = await rethrow(e);
+					if (transformed !== null) throw transformed ?? e;
+				}
+			}
+			return this as ActionBuilder_Start<R>;
+		}
+		/**
+		 * Specify a list of `constructor`s, the instances of each represents an error that can be safely ignored.
+		 *
+		 * For example, if you expect your `onclick` handler to throw an `AxiosError`, which can be safely ignored without any cleanup, you can add `AxiosError` to this array.
+		 * **An error message will still be shown to the user**, but it won't be an *unhandled* error.
+		 */
+		possibleErrors(...errors: { new(): Error }[]) {
+			this.__action.possibleErrors = errors;
+			return this;
+		}
+		closeOnError(defaultsToTrue?: boolean) { this.__action.closeOnError = defaultsToTrue ?? true; return this; }
+	}
+
+	/**
+	 * A potentially more user-friendly way to create a modal
+	 * 
+	 * **Note:** don't pass `$state`s to this builder. They won't work.
+	 * @param type `"ok" | "warning" | "error" | "confirm"`
+	 * @returns a builder
+	 */
+	export function builder<R>(type: PredefinedModal<unknown>['type']): ModalBuilder<R> {
+		return new ModalBuilder<R>(type)
 	}
 }

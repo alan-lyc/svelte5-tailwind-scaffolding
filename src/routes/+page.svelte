@@ -4,7 +4,7 @@
 	import '../app.css';
 	import '$lib/common.css';
 	import Button from '$lib/components/Button.svelte';
-	import { exception, formatDownloadRate, toHHMMSS as formatDuration } from '$lib/util.js';
+	import { markErrorAsHandled, formatDownloadRate, toHHMMSS as formatDuration } from '$lib/util.js';
 	import axios, { AxiosError } from 'axios';
 </script>
 
@@ -70,7 +70,7 @@
 	<Button
 		class="block"
 		onclick={() => {
-			throw exception(new SyntaxError('Cannot use import statement outside a module'));
+			throw markErrorAsHandled(new SyntaxError('Cannot use import statement outside a module'));
 		}}
 	>
 		Error
@@ -164,8 +164,8 @@
 			await block({
 				type: 'loading',
 				mode: 'determinate',
-				title: 'Downloading',
 				async task(states) {
+					states.setTitle("Downloading")
 					states.step(0).of(1).completed();
 					const controller = new AbortController();
 					states.setCancelHandler(async () => controller.abort());
@@ -187,37 +187,30 @@
 	<Button
 		class="block"
 		onclick={async () => {
-			const result = await modal({
-				type: 'confirm',
-				title: 'Are you sure?',
-				md: 'Do you want to download a very large file (1.07 GB)? Fee from your mobile carrier may apply.',
-				actions: [
-					'No',
-					{
-						text: 'Yes',
-						loadingScreenTitle: 'Downloading',
-						// loadingScreenMode: 'determinate',
-						loadingScreenMode: 'indeterminate',
-						closeOnError: true,
-						returns: true,
-						possibleErrors: [AxiosError],
-						async onclick(states) {
-							// states.step(0).of(1).completed();
-							const controller = new AbortController();
-							states.setCancelHandler(async () => controller.abort());
-							await axios.get('/large-file', {
-								signal: controller.signal,
-								async onDownloadProgress(e) {
-									// states.step(1).completed(e.progress ?? 0);
-									await states.setDescription(
-										`Downloading a very large file \n\nspeed: ${e.rate ? formatDownloadRate(e.rate) : 'unknown'}${e.estimated ? `, estimated ${formatDuration(e.estimated)} left` : ''}`
-									);
-								}
-							});
+			const result = await modal.builder<boolean>("confirm")
+				.title("Are you sure?")
+				.content('Do you want to download a very large file (1.07 GB)? Fee from your mobile carrier may apply.')
+				.action("No")
+				.action("Yes", true)
+				.primary()
+				.withDeterminateLoadingScreen(async (states) => {
+					states.setTitle("Downloading...")
+					states.step(0).of(1).completed();
+					const controller = new AbortController();
+					states.setCancelHandler(async () => controller.abort());
+					await axios.get('/large-file', {
+						signal: controller.signal,
+						async onDownloadProgress(e) {
+							states.step(1).completed(e.progress ?? 0);
+							await states.setDescription(
+								`Downloading a very large file \n\nspeed: ${e.rate ? formatDownloadRate(e.rate) : 'unknown'}${e.estimated ? `, estimated ${formatDuration(e.estimated)} left` : ''}`
+							);
 						}
-					}
-				]
-			});
+					});
+				})
+				.possibleErrors(AxiosError)
+				.closeOnError()
+				.show();
 			if (result)
 				await modal({
 					type: 'ok',

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { CustomModal } from '$lib/modal.svelte.js';
-	import { exception } from '$lib/util.js';
+	import { markErrorAsHandled } from '$lib/util.js';
 	import { onMount } from 'svelte';
 
 	let {
@@ -23,7 +23,7 @@
 			visible = true;
 		} else {
 			states.__reject?.(
-				exception(
+				markErrorAsHandled(
 					new Error(
 						'The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`'
 					)
