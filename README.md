@@ -67,7 +67,7 @@ export default {
 	// but dark mode was added by me
 	await modal({
 		type: "ok",
-		title: "Congradulations!",
+		title: "Congratulations!",
 		md: "You have completed setting up the scaffolding!",
 		actions: ["OK"],
 	})
