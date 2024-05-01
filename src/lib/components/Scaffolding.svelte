@@ -2,8 +2,7 @@
 	import { modal, modals } from '$lib/modal.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import '../common.css';
-	import { ManagedError, handledExceptionMagicString } from '$lib/util.js';
-	import { afterNavigate } from '$app/navigation';
+	import { ManagedError } from '$lib/util.js';
 
 	async function handler(error: unknown, promise: boolean) {
 		let title = promise ? 'Unhandled Promise Rejection' : 'Unhandled Error';
@@ -12,13 +11,7 @@
 		let userMessage =
 			'An error occurred, but it was not properly handled. If the site becomes unstable, please try refreshing the page.';
 		if (typeof error === 'string') {
-			if (error.startsWith(handledExceptionMagicString)) {
-				title = 'An error occurred';
-				userMessage = 'An error occurred with the following message:';
-				message = error.slice(handledExceptionMagicString.length);
-			} else {
-				message = `Error: ${error}`;
-			}
+			message = `Error: ${error}`;
 		} else if (error instanceof ManagedError) {
 			const e = error.error;
 			title = 'An error occurred';
@@ -69,18 +62,6 @@
 			
 		}
 	}
-
-	afterNavigate(() => {
-		window.onerror = async (
-			event,
-			source?: string,
-			line?: number,
-			col?: number,
-			error?: unknown
-		) => {
-			await handler(error, false);
-		};
-	});
 </script>
 
 <svelte:window

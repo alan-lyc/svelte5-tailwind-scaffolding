@@ -1,4 +1,4 @@
-export const handledExceptionMagicString = '0x68616e646c6564';
+// export const handledExceptionMagicString = '0x68616e646c6564';
 
 export class ManagedError {
 	constructor(public error: unknown) {}

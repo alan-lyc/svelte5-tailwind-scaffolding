@@ -14,42 +14,42 @@ npm i @alanlyc/svelte5-tailwind-scaffolding
 ```js
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{html,js,svelte,ts}'],
-	theme: {
-		extend: {},
-	},
-	plugins: [],
-	darkMode: "class",
+    content: ['./src/**/*.{html,js,svelte,ts}'],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
+    darkMode: "class",
 }
 ```
 ### 3. `src/app.html`
 ```html
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-		<script>
-			if (
-				window.matchMedia('prefers-color-scheme: dark') ||
-				localStorage.getItem('theme') === 'dark'
-			)
-				document.documentElement.classList.add('dark');
-			if (localStorage.getItem('theme') === 'light')
-				document.documentElement.classList.remove('dark');
-		</script>
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        %sveltekit.head%
+        <script>
+            if (
+                window.matchMedia('prefers-color-scheme: dark') ||
+                localStorage.getItem('theme') === 'dark'
+            )
+                document.documentElement.classList.add('dark');
+            if (localStorage.getItem('theme') === 'light')
+                document.documentElement.classList.remove('dark');
+        </script>
+    </head>
+    <body data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
 </html>
 ```
 ### 4. `src/routes/+layout.svelte`
 ```svelte
 <script lang="ts">
-	import { Scaffolding } from "@alanlyc/svelte5-tailwind-scaffolding"
+    import { Scaffolding } from "@alanlyc/svelte5-tailwind-scaffolding"
 </script>
 
 <Scaffolding />
@@ -59,20 +59,20 @@ export default {
 ### 5. `src/routes/+page.svelte`
 ```svelte
 <script lang="ts">
-	import { modal, Button } from "@alanlyc/svelte5-tailwind-scaffolding"
+    import { modal, Button } from "@alanlyc/svelte5-tailwind-scaffolding"
 </script>
 
 <Button class="block" onclick={async () => {
-	// most part of the modal was designed by Tailwind UI
-	// but dark mode was added by me
-	await modal({
-		type: "ok",
-		title: "Congratulations!",
-		md: "You have completed setting up the scaffolding!",
-		actions: ["OK"],
-	})
+    // most part of the modal was designed by Tailwind UI
+    // but dark mode was added by me
+    await modal({
+        type: "ok",
+        title: "Congratulations!",
+        md: "You have completed setting up the scaffolding!",
+        actions: ["OK"],
+    })
 }}>
-	OK Modal
+    OK Modal
 </Button>
 ```
 ### 6. `npm run dev`
@@ -93,23 +93,23 @@ import type { Miniflare } from "miniflare";
 let mf: Miniflare;
 
 export async function handle({ event, resolve }) {
-	if (dev) {
-		if (!mf) {
-			const { Miniflare, Log, LogLevel } = await import("miniflare");
-			mf = new Miniflare({
-				log: new Log(LogLevel.INFO),
-				kvPersist: ".wrangler/state/v3/kv",
-				kvNamespaces: ["KV"],
-				r2Persist: ".wrangler/state/v3/r2",
-				r2Buckets: ["RV"],
-				// ... and whatever bindings you have
-				script: "",
-				modules: true,
-			});
-		}
-		event.platform = { env: await mf.getBindings() };
-	}
-	return resolve(event);
+    if (dev) {
+        if (!mf) {
+            const { Miniflare, Log, LogLevel } = await import("miniflare");
+            mf = new Miniflare({
+                log: new Log(LogLevel.INFO),
+                kvPersist: ".wrangler/state/v3/kv",
+                kvNamespaces: ["KV"],
+                r2Persist: ".wrangler/state/v3/r2",
+                r2Buckets: ["RV"],
+                // ... and whatever bindings you have
+                script: "",
+                modules: true,
+            });
+        }
+        event.platform = { env: await mf.getBindings() };
+    }
+    return resolve(event);
 }
 ```
 ### 3. `src/app.d.ts`
@@ -119,18 +119,18 @@ import type { KVNamespace, R2Bucket } from "@cloudflare/workers-types";
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
-	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface PageState {}
-		interface Platform {
-			env: {
-				KV: KVNamespace,
-				R2: R2Bucket,
-			}
-		}
-	}
+    namespace App {
+        // interface Error {}
+        // interface Locals {}
+        // interface PageData {}
+        // interface PageState {}
+        interface Platform {
+            env: {
+                KV: KVNamespace,
+                R2: R2Bucket,
+            }
+        }
+    }
 }
 
 export {};
@@ -148,13 +148,13 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-	plugins: [sveltekit()],
-	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
-	},
-	optimizeDeps: {
-		exclude: ['miniflare']
-	}
+    plugins: [sveltekit()],
+    test: {
+        include: ['src/**/*.{test,spec}.{js,ts}']
+    },
+    optimizeDeps: {
+        exclude: ['miniflare']
+    }
 });
 ```
 ### 6. Interact with bindings with Wrangler
