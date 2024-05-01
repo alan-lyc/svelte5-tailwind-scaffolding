@@ -6,7 +6,7 @@
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint && npm run preparePostCss",
-		"preparePostCss": "postcss --dir ./dist --config ./postcss.config.js ./dist/**/*.css",
+		"preparePostCss": "postcss ./src/lib/*.css ./src/lib/**/*.css --dir dist --base \"$(pwd)/src/lib\"",
 		"prepublishOnly": "npm run package",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
