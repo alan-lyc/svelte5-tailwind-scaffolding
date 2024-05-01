@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.markdown {
+	@apply space-y-2;
+}
+.markdown-align-initial {
+	@apply space-y-2;
+	text-align: initial;
+}
+.markdown blockquote {
+	@apply border-s-4 border-solid border-gray-400 py-3 px-2.5;
+}
+.markdown pre {
+	@apply bg-gray-700 dark:bg-gray-900 text-white rounded-md px-4 py-2 overflow-auto;
+}
+
+body {
+	@apply dark:bg-neutral-900 dark:text-white;
+}

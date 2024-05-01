@@ -1,0 +1,46 @@
+<script lang="ts">
+	import type { CustomModal } from '$lib/modal.svelte.js';
+	import { exception } from '$lib/util.js';
+	import { onMount } from 'svelte';
+
+	let {
+		states = $bindable(),
+		dialog = $bindable(),
+		visible = $bindable()
+	}: {
+		states: CustomModal<any>;
+		dialog?: HTMLDialogElement | undefined;
+		visible: boolean;
+	} = $props();
+
+	let container: HTMLDivElement | undefined = $state();
+
+	onMount(() => {
+		const d = container!.children[0];
+		if (d instanceof HTMLDialogElement) {
+			dialog = d;
+			dialog.showModal();
+			visible = true;
+		} else {
+			states.__reject?.(
+				exception(
+					new Error(
+						'The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`'
+					)
+				)
+			);
+			// states = {
+			// 	type: "error",
+			// 	title: "Internal Error",
+			// 	md: "While attempting to display a modal, an error occurred:\n>The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`",
+			// 	actions: ["OK"]
+			// }
+			// await tick();
+			// dialog?.showModal();
+		}
+	});
+</script>
+
+<div bind:this={container}>
+	{@render states.ui(states.__resolve!, states.__reject!)}
+</div>
