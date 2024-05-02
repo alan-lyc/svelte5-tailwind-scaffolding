@@ -189,7 +189,7 @@
 		onclick={async () => {
 			const result = await modal.builder<boolean>("confirm")
 				.title("Are you sure?")
-				.content('Do you want to download a very large file (1.07 GB)? Fee from your mobile carrier may apply.')
+				.content('Do you want to download an asset (25 MB)?')
 				.action("No")
 				.action("Yes", true)
 				.primary()
@@ -201,14 +201,15 @@
 					await axios.get('/large-file', {
 						signal: controller.signal,
 						async onDownloadProgress(e) {
+							states.log(`Downloaded ${e.bytes.toPrecision(3)} bytes`)
 							states.step(1).completed(e.progress ?? 0);
 							await states.setDescription(
-								`Downloading a very large file \n\nspeed: ${e.rate ? formatDownloadRate(e.rate) : 'unknown'}${e.estimated ? `, estimated ${formatDuration(e.estimated)} left` : ''}`
+								`Downloading asset \n\nspeed: ${e.rate ? formatDownloadRate(e.rate) : 'unknown'}${e.estimated ? `, estimated ${formatDuration(e.estimated)} left` : ''}`
 							);
-						}
+						},
 					});
 				})
-				.possibleErrors(AxiosError)
+				.possibleErrors(AxiosError)	// when cancelled, or some network error
 				.closeOnError()
 				.show();
 			if (result)
@@ -220,6 +221,6 @@
 				});
 		}}
 	>
-		Download (1.07 GB) (will 404 - please add a large file at static/large-file)
+		Download (25 MB)
 	</Button>
 </main>

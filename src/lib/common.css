@@ -7,9 +7,11 @@
 }
 .markdown blockquote {
 	@apply border-s-4 border-solid border-gray-400 py-3 px-2.5;
+	text-align: initial;
 }
 .markdown pre {
 	@apply bg-gray-700 dark:bg-gray-900 text-white rounded-md px-4 py-2 overflow-auto;
+	text-align: initial;
 }
 
 body {

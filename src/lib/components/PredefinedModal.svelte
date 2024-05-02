@@ -5,7 +5,7 @@
 	import Button from './Button.svelte';
 	import ModalIcon from './ModalIcon.svelte';
 	import dedent from 'dedent';
-	import { markErrorAsHandled } from '$lib/util.js';
+	import { markErrorAsHandled, timeout } from '$lib/util.js';
 	import ModalContent from './ModalContent.svelte';
 
 	let {
@@ -36,6 +36,7 @@
 	onMount(async () => {
 		rendered = states.md;
 		dialog!.showModal();
+		await timeout(50);
 		visible = true;
 		({ DOMPurify, marked } = await imports());
 		rendered = DOMPurify?.sanitize((await marked?.parse(dedent(states.md))) ?? '');
@@ -44,7 +45,7 @@
 
 <BaseModal bind:dialog bind:visible>
 	<ModalIcon type={states.type} />
-	<ModalContent title={states.title}>
+	<ModalContent title={states.title} withMargins>
 		{@html rendered}
 	</ModalContent>
 	{#snippet buttons(animateClose)}

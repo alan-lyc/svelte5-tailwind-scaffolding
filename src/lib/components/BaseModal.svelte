@@ -80,12 +80,12 @@
 		? 'scale-[1] backdrop:bg-black/25 dark:backdrop:bg-white/15'
 		: 'scale-[0] backdrop:bg-transparent dark:backdrop:bg-transparent'} 
 		overflow-hidden rounded-lg bg-white dark:bg-slate-800 text-left shadow-xl transition-all backdrop:transition-all
-		{alwaysFullWidth ? 'w-full' : 'sm:w-full'} sm:max-w-lg min-w-72
+		{alwaysFullWidth ? 'w-full' : 'sm:w-full'} sm:max-w-lg min-w-72 flex flex-col
 	"
 	style="--sc-tr-d: {duration}ms"
 >
 	<div
-		class="bg-white dark:bg-gray-800 px-4 {buttons ? 'pb-4' : 'pb-6'} pt-5 sm:p-6 sm:pb-4 sm:flex sm:items-start"
+		class="bg-white dark:bg-gray-800 px-4 {buttons ? 'pb-4' : 'pb-6'} pt-5 sm:p-6 sm:pb-4 flex-1 min-h-0 flex flex-col sm:flex-row"
 	>
 		{@render children(animateClose)}
 	</div>

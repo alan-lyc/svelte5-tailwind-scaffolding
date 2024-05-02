@@ -15,14 +15,16 @@ export function markErrorAsHandled(error: unknown) {
 }
 
 export function formatDownloadRate(bytePerSecond: number) {
+	// it is now bit per second. not changing the name though
+	bytePerSecond = bytePerSecond * 8;
 	if (bytePerSecond < 1024) {
-		return bytePerSecond.toPrecision(3).concat(' Bps');
+		return bytePerSecond.toPrecision(3).concat(' bps');
 	} else if (bytePerSecond < 1024 * 1024) {
-		return (bytePerSecond / 1024).toPrecision(3).concat(' KBps');
+		return (bytePerSecond / 1024).toPrecision(3).concat(' Kbps');
 	} else if (bytePerSecond < 1024 * 1024 * 1024) {
-		return (bytePerSecond / 1024 / 1024).toPrecision(3).concat(' MBps');
+		return (bytePerSecond / 1024 / 1024).toPrecision(3).concat(' Mbps');
 	} else {
-		return (bytePerSecond / 1024 / 1024 / 1024).toPrecision(3).concat(' GBps');
+		return (bytePerSecond / 1024 / 1024 / 1024).toPrecision(3).concat(' Gbps');
 	}
 }
 export function toHHMMSS(seconds: number) {

@@ -6,48 +6,47 @@
 	import { onMount } from 'svelte';
 
 	async function handler(error: unknown, promise: boolean) {
-		console.log("here")
-		let title = promise ? 'Unhandled Promise Rejection' : 'Unhandled Error';
-		let stack = '';
-		let message = '';
-		let userMessage =
-			'An error occurred, but it was not properly handled. If the site becomes unstable, please try refreshing the page.';
-		if (typeof error === 'string') {
-			message = `Error: ${error}`;
-		} else if (error instanceof ManagedError) {
-			const e = error.error;
-			title = 'An error occurred';
-			userMessage = 'An error occurred with the following message:';
-			if (typeof e === 'string') {
-				message = e;
-			} else if (e instanceof Error) {
-				message = e.toString();
-			} else if (
-				typeof e === 'object' &&
-				e &&
-				'message' in e &&
-				typeof e.message === 'string'
-			) {
-				message = `Error: ${e.message}`;
-			} else {
-				message = JSON.stringify(e);
-			}
-		} else if (error instanceof Error) {
-			if (error instanceof Error && error.stack) {
-				stack = `\n\nStack Trace:\n\`\`\`${error.stack}\n\n\`\`\`\n\n`;
-			}
-			message = error.toString();
-		} else if (
-			typeof error === 'object' &&
-			error &&
-			'message' in error &&
-			typeof error.message === 'string'
-		) {
-			message = `Error: ${error.message}`;
-		} else {
-			message = JSON.stringify(error);
-		}
 		try {
+			let title = promise ? 'Unhandled Promise Rejection' : 'Unhandled Error';
+			let stack = '';
+			let message = '';
+			let userMessage =
+				'An error occurred, but it was not properly handled. If the site becomes unstable, please try refreshing the page.';
+			if (typeof error === 'string') {
+				message = `Error: ${error}`;
+			} else if (error instanceof ManagedError) {
+				const e = error.error;
+				title = 'An error occurred';
+				userMessage = 'An error occurred with the following message:';
+				if (typeof e === 'string') {
+					message = e;
+				} else if (e instanceof Error) {
+					message = e.toString();
+				} else if (
+					typeof e === 'object' &&
+					e &&
+					'message' in e &&
+					typeof e.message === 'string'
+				) {
+					message = `Error: ${e.message}`;
+				} else {
+					message = JSON.stringify(e);
+				}
+			} else if (error instanceof Error) {
+				if (error instanceof Error && error.stack) {
+					stack = `\n\nStack Trace:\n\`\`\`${error.stack}\n\n\`\`\`\n\n`;
+				}
+				message = error.toString();
+			} else if (
+				typeof error === 'object' &&
+				error &&
+				'message' in error &&
+				typeof error.message === 'string'
+			) {
+				message = `Error: ${error.message}`;
+			} else {
+				message = JSON.stringify(error);
+			}
 			await modal({
 				type: 'error',
 				title,

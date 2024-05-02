@@ -580,7 +580,7 @@ export module modal {
 		 * Specify a list of `constructor`s, the instances of each represents an error that can be safely ignored.
 		 *
 		 * For example, if you expect your `onclick` handler to throw an `AxiosError`, which can be safely ignored without any cleanup, you can add `AxiosError` to this array.
-		 * **An error message will still be shown to the user**, but it won't be an *unhandled* error.
+		 * **An error will still be thrown, and an error message will still be shown to the user**, but it won't be an *unhandled* error.
 		 */
 		possibleErrors(...errors: { new(): Error }[]) {
 			this.__action.possibleErrors = errors;

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { LoadingStateImpl } from '$lib/modal.svelte.js';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import BaseModal from './BaseModal.svelte';
 	import Button from './Button.svelte';
+	import ModalContent from './ModalContent.svelte';
 
 	let {
 		states = $bindable(),
@@ -50,6 +51,8 @@
 		}, 750)
 	});
 
+	let log: HTMLElement | undefined = $state(undefined)
+
 	onDestroy(() => {
 		clearInterval(i);
 	})
@@ -57,6 +60,17 @@
 	$effect(() => {
 		states.animateClose = animateClose;
 	});
+	$effect.pre(() => {
+		if (states.logs.length) {
+			const autoscroll = log && log.offsetHeight + log.scrollTop > log.scrollHeight - 50;
+
+			if (autoscroll) {
+				tick().then(() => {
+					log?.scrollTo(0, log.scrollHeight);
+				});
+			}
+		}
+	})
 </script>
 
 {#snippet buttons(animateClose: () => Promise<void>)}
@@ -78,30 +92,27 @@
 	buttons={states.cancel ? buttons : undefined}
 	alwaysFullWidth
 >
-	<div class="text-center sm:text-left sm:mt-0 flex-1 min-w-0">
-		<h2 class=" text-lg sm:text-base font-semibold leading-6 text-gray-900 dark:text-white">
-			{states.title}
-		</h2>
-		<div class="mt-2 text-sm text-gray-500 dark:text-gray-300 markdown">
-			{#if states.mode === "determinate"}
-			<div class="flex items-center gap-2">
-				<span>{progress ? `${(progress * 100).toPrecision(3)}%` : 'Pending'}</span><progress
-					class="h-2 flex-1 rounded overflow-hidden min-w-0"
-					value={progress}
-					max="1"
-				></progress>
-			</div>
-			{:else}
-			<div class="flex items-center gap-2">
-				This may take a while {dots}
-			</div>
-			{/if}
-			{@html states.text}
-			{#if states.logs.length}
-				<pre><code bind:this={code}
-						>{#each states.logs as log}{log}<br />{/each}</code
-					></pre>
-			{/if}
+	<ModalContent title={states.title} contentFlexCol>
+		{#if states.mode === "determinate"}
+		<div class="flex items-center gap-2">
+			<span>{progress ? `${(progress * 100).toPrecision(3)}%` : 'Pending'}</span><progress
+				class="h-2 flex-1 rounded overflow-hidden min-w-0"
+				value={progress}
+				max="1"
+			></progress>
 		</div>
-	</div>
+		{:else}
+		<div class="flex items-center gap-2">
+			This may take a while {dots}
+		</div>
+		{/if}
+		{#if states.text}
+		{@html states.text}
+		{/if}
+		{#if states.logs.length}
+			<pre class="overflow-auto flex-1 min-h-0" bind:this={log}><code bind:this={code}
+					>{#each states.logs as log}{log}<br />{/each}</code
+				></pre>
+		{/if}
+	</ModalContent>
 </BaseModal>
