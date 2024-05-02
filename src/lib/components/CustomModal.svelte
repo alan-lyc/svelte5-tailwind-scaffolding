@@ -29,14 +29,6 @@
 					)
 				)
 			);
-			// states = {
-			// 	type: "error",
-			// 	title: "Internal Error",
-			// 	md: "While attempting to display a modal, an error occurred:\n>The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`",
-			// 	actions: ["OK"]
-			// }
-			// await tick();
-			// dialog?.showModal();
 		}
 	});
 </script>

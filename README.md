@@ -2,6 +2,8 @@
 
 This is just a simple package to bootstrap my personal projects with Svelte 5 and TailwindCSS. Nothing special.
 
+It provides functions for displaying modals and it displays error automatically. There are also utilities for buttons, and it automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
+
 ## Setup
 ### 1. Install Everything
 ```bash
@@ -19,7 +21,7 @@ export default {
         extend: {},
     },
     plugins: [],
-    darkMode: "class",
+    darkMode: "class",  // <-- this is required
 }
 ```
 ### 3. `src/app.html`

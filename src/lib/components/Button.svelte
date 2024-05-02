@@ -7,14 +7,12 @@
 		children,
 		primary,
 		destructive,
-		full,
 		class: classList,
 		...rest
 	}: {
 		children: Snippet;
 		primary?: boolean;
 		destructive?: boolean;
-		full?: boolean;
 	} & HTMLButtonAttributes = $props();
 </script>
 

@@ -6,6 +6,7 @@
 	import ModalIcon from './ModalIcon.svelte';
 	import dedent from 'dedent';
 	import { markErrorAsHandled } from '$lib/util.js';
+	import ModalContent from './ModalContent.svelte';
 
 	let {
 		states,
@@ -43,18 +44,9 @@
 
 <BaseModal bind:dialog bind:visible>
 	<ModalIcon type={states.type} />
-	<div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left flex-1 min-w-0">
-		<h2 class="text-lg sm:text-base font-semibold leading-6 text-gray-900 dark:text-white">
-			{states.title}
-		</h2>
-		<div
-			class="{rendered.length > 150
-				? 'mt-2'
-				: 'mt-1'} text-sm text-gray-500 dark:text-gray-300 markdown"
-		>
-			{@html rendered}
-		</div>
-	</div>
+	<ModalContent title={states.title}>
+		{@html rendered}
+	</ModalContent>
 	{#snippet buttons(animateClose)}
 		{#each states.actions as action}
 			{@const realAction =

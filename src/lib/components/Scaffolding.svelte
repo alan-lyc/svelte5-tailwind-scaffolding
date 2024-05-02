@@ -3,8 +3,10 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import '../common.css';
 	import { ManagedError } from '$lib/util.js';
+	import { onMount } from 'svelte';
 
 	async function handler(error: unknown, promise: boolean) {
+		console.log("here")
 		let title = promise ? 'Unhandled Promise Rejection' : 'Unhandled Error';
 		let stack = '';
 		let message = '';
@@ -62,6 +64,12 @@
 			
 		}
 	}
+
+	onMount(() => {
+		window.onerror = async (e, s, l, c, err) => {
+			await handler(err, false);
+		}
+	})
 </script>
 
 <svelte:window
