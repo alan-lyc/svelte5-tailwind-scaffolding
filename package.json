@@ -1,6 +1,6 @@
 {
 	"name": "@alanlyc/svelte5-tailwind-scaffolding",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
@@ -32,11 +32,11 @@
 		"@sveltejs/kit": "^2.5.7",
 		"@sveltejs/package": "^2.3.1",
 		"@sveltejs/vite-plugin-svelte": "^3.1.0",
-		"@types/eslint": "^8.56.10",
+		"@types/eslint": "^8.56.0",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
 		"@typescript-eslint/parser": "^7.8.0",
 		"autoprefixer": "^10.4.19",
-		"eslint": "^9.1.1",
+		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.38.0",
 		"postcss": "^8.4.38",
@@ -60,7 +60,7 @@
 		"axios": "^1.6.8",
 		"dedent": "^1.5.3",
 		"dompurify": "^3.1.2",
-		"lucide-svelte": "^0.377.0",
+		"lucide-svelte": "^0.373.0",
 		"marked": "^12.0.2"
 	},
 	"repository": {
