@@ -23,10 +23,8 @@
 			visible = true;
 		} else {
 			states.__reject?.(
-				markErrorAsHandled(
-					new Error(
-						'The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`'
-					)
+				new Error(
+					'The `Modal` component received a custom modal that does not produce an `HTMLDialogElement`'
 				)
 			);
 		}

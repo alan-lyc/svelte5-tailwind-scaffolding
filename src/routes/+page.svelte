@@ -3,6 +3,7 @@
 	import { block, modal } from '$lib/modal.svelte.js';
 	import '../app.css';
 	import '$lib/common.css';
+	import { timeout } from '$lib/util.js'
 	import Button from '$lib/components/Button.svelte';
 	import { markErrorAsHandled, formatDownloadRate, toHHMMSS as formatDuration } from '$lib/util.js';
 	import axios, { AxiosError } from 'axios';
@@ -171,9 +172,9 @@
 					states.setCancelHandler(async () => controller.abort());
 					await axios.get('/a-very-large-file', {
 						signal: controller.signal,
-						onDownloadProgress(e) {
+						async onDownloadProgress(e) {
 							states.step(1).completed(e.progress ?? 0);
-							states.setDescription(
+							await states.setDescription(
 								`Downloading a very large file (speed: ${e.rate ? (e.rate * 8) / 1024 : 'unknown'} Kbps${e.estimated ? `, estimated ${e.estimated}s left` : ''})`
 							);
 						}
@@ -196,18 +197,16 @@
 				.withDeterminateLoadingScreen(async (states) => {
 					states.setTitle("Downloading...")
 					states.step(0).of(1).completed();
-					const controller = new AbortController();
-					states.setCancelHandler(async () => controller.abort());
-					await axios.get('/large-file', {
-						signal: controller.signal,
-						async onDownloadProgress(e) {
-							states.log(`Downloaded ${e.bytes.toPrecision(3)} bytes`)
-							states.step(1).completed(e.progress ?? 0);
-							await states.setDescription(
-								`Downloading asset \n\nspeed: ${e.rate ? formatDownloadRate(e.rate) : 'unknown'}${e.estimated ? `, estimated ${formatDuration(e.estimated)} left` : ''}`
-							);
-						},
-					});
+					let s = 120;
+					const cancel = { value: false }
+					states.setCancelHandler(() => { cancel.value = true; })
+					states.setDescription("Downloading asset \n\nspeed: unknown, estimated unknown time left")
+					for (let i = 0; i < s; i++) {
+						if (cancel.value) throw Error("cancelled")
+						await timeout(1000);
+						states.step(1).completed(i / s);
+						states.log(`Time elapsed ${i} seconds`)
+					}
 				})
 				.possibleErrors(AxiosError)	// when cancelled, or some network error
 				.closeOnError()
@@ -224,3 +223,7 @@
 		Download (25 MB)
 	</Button>
 </main>
+
+<div class="flex flex-col h-fit">
+	
+</div>

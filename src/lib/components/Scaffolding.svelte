@@ -4,6 +4,7 @@
 	import '../common.css';
 	import { ManagedError } from '$lib/util.js';
 	import { onMount } from 'svelte';
+	import dedent from 'dedent';
 
 	async function handler(error: unknown, promise: boolean) {
 		try {
@@ -34,7 +35,10 @@
 				}
 			} else if (error instanceof Error) {
 				if (error instanceof Error && error.stack) {
-					stack = `\n\nStack Trace:\n\`\`\`${error.stack}\n\n\`\`\`\n\n`;
+					const e = error.toString();
+					const s = error.stack;
+					const t = s.startsWith(e) ? s.slice(e.length) : s
+					stack = `\n\nStack Trace:\n\n\`\`\`\n${dedent(t)}\n\n\`\`\`\n\n`;
 				}
 				message = error.toString();
 			} else if (

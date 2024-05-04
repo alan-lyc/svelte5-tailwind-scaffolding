@@ -300,7 +300,7 @@ export type LoadingState = {
 	 * @param markdown a markdown description of the currently executing step
 	 */
 	setDescription: (txt: string) => Promise<void>;
-	setCancelHandler: (handler: () => Promise<void>) => void;
+	setCancelHandler: (handler: () => Promise<void> | void) => void;
 	removeCancelHandler: (handler: () => Promise<void>) => void;
 };
 export type LoadingStateImpl = Omit<LoadingModal<unknown>, 'task'> & {
@@ -309,7 +309,7 @@ export type LoadingStateImpl = Omit<LoadingModal<unknown>, 'task'> & {
 	logs: string[];
 	text?: string;
 	title: string;
-	cancel?: () => Promise<void>;
+	cancel?: () => Promise<void> | void;
 	animateClose?: () => Promise<void>;
 };
 export type LoadingModal<T> = {
@@ -382,7 +382,7 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 		logs: [] as string[],
 		text: undefined as string | undefined,
 		animateClose: undefined,
-		cancel: undefined as (() => Promise<void>) | undefined,
+		cancel: undefined as (() => Promise<void> | void) | undefined,
 		log(str) {
 			this.logs.push(str);
 		},
