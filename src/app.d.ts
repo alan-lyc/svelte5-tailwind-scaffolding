@@ -10,4 +10,8 @@ declare global {
 	}
 }
 
+declare module "accessible-autocomplete" {
+
+}
+
 export {};

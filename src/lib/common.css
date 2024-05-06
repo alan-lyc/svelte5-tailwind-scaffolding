@@ -13,6 +13,9 @@
 	@apply bg-gray-700 dark:bg-gray-900 text-white rounded-md px-4 py-2 overflow-auto;
 	text-align: initial;
 }
+.markdown code:not(pre > *) {
+	@apply bg-gray-700 dark:bg-gray-900 px-1 py-0.5 text-sm rounded text-white dark:text-gray-300;
+}
 
 body {
 	@apply dark:bg-neutral-900 dark:text-white;

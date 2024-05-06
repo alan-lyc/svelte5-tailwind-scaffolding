@@ -3,10 +3,18 @@
 	import { block, modal } from '$lib/modal.svelte.js';
 	import '../app.css';
 	import '$lib/common.css';
-	import { timeout } from '$lib/util.js'
+	import { timeout } from '$lib/util.js';
 	import Button from '$lib/components/Button.svelte';
 	import { markErrorAsHandled, formatDownloadRate, toHHMMSS as formatDuration } from '$lib/util.js';
 	import axios, { AxiosError } from 'axios';
+	import BaseModal from '$lib/components/BaseModal.svelte';
+	import ModalContent from '$lib/components/ModalContent.svelte';
+	import InputText from '$lib/components/InputText.svelte';
+	import Label from '$lib/components/Label.svelte';
+	import _ from 'lodash';
+	import ModalContentForm from '$lib/components/ModalContentForm.svelte';
+	import Autocomplete from '$lib/components/Autocomplete.svelte';
+	import { countries } from './countries.js';
 </script>
 
 <Scaffolding />
@@ -166,7 +174,7 @@
 				type: 'loading',
 				mode: 'determinate',
 				async task(states) {
-					states.setTitle("Downloading")
+					states.setTitle('Downloading');
 					states.step(0).of(1).completed();
 					const controller = new AbortController();
 					states.setCancelHandler(async () => controller.abort());
@@ -188,27 +196,32 @@
 	<Button
 		class="block"
 		onclick={async () => {
-			const result = await modal.builder<boolean>("confirm")
-				.title("Are you sure?")
+			const result = await modal
+				.builder('confirm')
+				.title('Are you sure?')
 				.content('Do you want to download an asset (25 MB)?')
-				.action("No")
-				.action("Yes", true)
+				.action('No')
+				.action('Yes', true)
 				.primary()
 				.withDeterminateLoadingScreen(async (states) => {
-					states.setTitle("Downloading...")
+					states.setTitle('Downloading...');
 					states.step(0).of(1).completed();
 					let s = 120;
-					const cancel = { value: false }
-					states.setCancelHandler(() => { cancel.value = true; })
-					states.setDescription("Downloading asset \n\nspeed: unknown, estimated unknown time left")
+					const cancel = { value: false };
+					states.setCancelHandler(() => {
+						cancel.value = true;
+					});
+					states.setDescription(
+						'Downloading asset \n\nspeed: unknown, estimated unknown time left'
+					);
 					for (let i = 0; i < s; i++) {
-						if (cancel.value) throw Error("cancelled")
+						if (cancel.value) throw Error('cancelled');
 						await timeout(1000);
-						states.step(1).completed(i / s);
-						states.log(`Time elapsed ${i} seconds`)
+						states.step(1).completed((i + 1) / s);
+						states.log(`Time elapsed ${i + 1} seconds`);
 					}
 				})
-				.possibleErrors(AxiosError)	// when cancelled, or some network error
+				.possibleErrors(AxiosError) // when cancelled, or some network error
 				.closeOnError()
 				.show();
 			if (result)
@@ -220,10 +233,96 @@
 				});
 		}}
 	>
-		Download (25 MB)
+		Download Asset (fake, 120s)
 	</Button>
-</main>
 
-<div class="flex flex-col h-fit">
-	
-</div>
+	{#snippet login(resolve: (str: [string, string] | undefined) => void)}
+		<BaseModal oncancel={() => resolve(undefined)}>
+			{#snippet children(animateClose)}
+				{@const credentials = { username: '', password: '' }}
+				<ModalContentForm
+					title="Login"
+					class="gap-2 flex flex-col"
+					onsubmit={async (e) => {
+						e.preventDefault();
+						if (credentials.username && credentials.password) {
+							await animateClose();
+							resolve([credentials.username, credentials.password]);
+						}
+					}}
+				>
+					<Label class="text-start">
+						Username
+						<InputText bind:value={credentials.username} class="w-full" name="username" />
+					</Label>
+					<Label class="text-start">
+						Password
+						<InputText
+							bind:value={credentials.password}
+							class="w-full"
+							name="password"
+							type="password"
+							validate={(v) =>
+								v.length <= 8 ? 'A password must be longer than 8 characters' : undefined}
+						/>
+					</Label>
+					<div class="flex justify-end w-full mt-4 gap-2">
+						<Button
+							class="w-full sm:w-auto"
+							type="button"
+							onclick={async () => {
+								await animateClose();
+								resolve(undefined);
+							}}>Cancel</Button
+						>
+						<Button class="w-full sm:w-auto" primary type="submit">Confirm</Button>
+					</div>
+				</ModalContentForm>
+			{/snippet}
+		</BaseModal>
+	{/snippet}
+	<Button
+		class="block"
+		onclick={async () => {
+			const [user, pwd] = (await modal({
+				type: 'custom',
+				ui: login
+			})) ?? [undefined, undefined];
+			if (user && pwd)
+				await modal
+					.builder('ok')
+					.title('Credentials')
+					.content(`Your username is \`${_.escape(user)}\`, and your password is \`${pwd}\``)
+					.action('OK')
+					.show();
+		}}
+	>
+		Login
+	</Button>
+
+	<h2 class="font-bold text-xl">Other Utilities</h2>
+	<h3 class="font-bold text-lg">1. Autocomplete</h3>
+	<Autocomplete
+		insetLabel
+		label="Countries"
+		id="countries"
+		class="max-w-sm !mt-0"
+		source={countries}
+		showAllValues
+	/>
+	<h3 class="font-bold text-lg">2. Buttons</h3>
+	<div class="flex gap-2 !mt-0 pt-1">
+		<Button primary>Primary</Button>
+		<Button>Secondary</Button>
+		<Button primary destructive>Primary, Destructive</Button>
+		<Button destructive>Secondary, Destructive</Button>
+	</div>
+	<div>
+		<h3 class="font-bold text-lg">3. Normal Input</h3>
+		<Label>
+			<span class="ms-2">Input</span>
+			{@const ref = { value: "" }}	<!-- just don't want to go to the top, you know? -->
+			<InputText bind:value={ref.value} class="w-96" />
+		</Label>
+	</div>
+</main>

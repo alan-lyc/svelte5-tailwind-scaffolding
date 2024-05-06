@@ -260,7 +260,7 @@ export type CustomModal<T> = {
  * ```
  * @returns the result of calling `resolve`
  */
-export async function modal<T>(modal: CustomModal<T> | PredefinedModal<T>): Promise<T> {
+export async function modal<T = undefined>(modal: CustomModal<T> | PredefinedModal<T>): Promise<T> {
 	/**
 	 * This should be safe.
 	 * The typescript error essentially means that the actions could be assigned something that is `string | undefined`, but is not `T`.
@@ -463,7 +463,7 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export module modal {
-	export class ModalBuilder<R> {
+	export class ModalBuilder<R = never> {
 		constructor(public type: PredefinedModal<unknown>['type'], public __title: string = "", public __md: string = "", public __actions: ModalAction<R>[] = []) {}
 		title(text: string) { this.__title = text; return this; }
 		content(md: string) { this.__md = md; return new ActionBuilder_Start<R>(this) }
@@ -471,6 +471,11 @@ export module modal {
 	export class ActionBuilder_Start<R> {
 		constructor(public __parent: ModalBuilder<R>) {}
 		action(text: string): ActionBuilder<R | undefined>;
+		action<T extends bigint>(text: string, returns: T): ActionBuilder<R | T>;
+		action<T extends number>(text: string, returns: T): ActionBuilder<R | T>;
+		action<T extends boolean>(text: string, returns: T): ActionBuilder<R | T>;
+		action<T extends object>(text: string, returns: T): ActionBuilder<R | T>;
+		action<T extends string>(text: string, returns: T): ActionBuilder<R | T>;
 		action(text: string, returns: R): ActionBuilder<R>;
 		action(text: string, returns?: R) {
 			const a = {
@@ -596,7 +601,7 @@ export module modal {
 	 * @param type `"ok" | "warning" | "error" | "confirm"`
 	 * @returns a builder
 	 */
-	export function builder<R>(type: PredefinedModal<unknown>['type']): ModalBuilder<R> {
+	export function builder<R = never>(type: PredefinedModal<unknown>['type']): ModalBuilder<R> {
 		return new ModalBuilder<R>(type)
 	}
 }

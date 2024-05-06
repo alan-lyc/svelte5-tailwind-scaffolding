@@ -1,6 +1,6 @@
 {
 	"name": "@alanlyc/svelte5-tailwind-scaffolding",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
@@ -33,12 +33,15 @@
 		"@sveltejs/package": "^2.3.1",
 		"@sveltejs/vite-plugin-svelte": "^3.1.0",
 		"@types/eslint": "^8.56.0",
+		"@types/lodash": "^4.17.1",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
 		"@typescript-eslint/parser": "^7.8.0",
 		"autoprefixer": "^10.4.19",
+		"axios": "^1.6.8",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.38.0",
+		"lodash": "^4.17.21",
 		"postcss": "^8.4.38",
 		"postcss-cli": "^11.0.0",
 		"prettier": "^3.2.5",
@@ -49,7 +52,6 @@
 		"tailwindcss": "^3.4.3",
 		"tslib": "^2.6.2",
 		"typescript": "^5.4.5",
-		"axios": "^1.6.8",
 		"vite": "^5.2.11"
 	},
 	"svelte": "./dist/index.js",
@@ -58,6 +60,7 @@
 	"dependencies": {
 		"@types/dedent": "^0.7.2",
 		"@types/dompurify": "^3.0.5",
+		"accessible-autocomplete": "^3.0.0",
 		"dedent": "^1.5.3",
 		"dompurify": "^3.1.2",
 		"lucide-svelte": "^0.373.0",
@@ -66,6 +69,6 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/alan-lyc/svelte5-tailwind-scaffolding"
-	},	
+	},
 	"license": "MIT"
 }

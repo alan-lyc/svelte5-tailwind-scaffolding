@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import ModalContent0 from './ModalContent0.svelte';
 
 	let {
 		title,
@@ -26,7 +25,14 @@
 	} = $props();
 </script>
 
-<ModalContent0 {title} {withMargins}>
+<div
+	class="{withMargins
+		? 'mt-3 sm:ml-4 sm:mt-0'
+		: ''} text-center sm:text-left flex-1 min-w-0 min-h-0 flex flex-col"
+>
+	<h2 class="text-lg sm:text-base font-semibold leading-6 text-gray-900 dark:text-white">
+		{title}
+	</h2>
 	<div
 		class="mt-1 text-sm text-gray-500 dark:text-gray-300 markdown flex-1 min-h-0 {contentFlex
 			? 'flex flex-col'
@@ -34,4 +40,4 @@
 	>
 		{@render children()}
 	</div>
-</ModalContent0>
+</div>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import ModalContent0 from './ModalContent0.svelte';
+	import type { HTMLFormAttributes } from 'svelte/elements';
 
 	let {
 		title,
@@ -8,6 +9,7 @@
 		contentFlexCol: contentFlex,
 		class: classList = "",
 		children,
+		...rest
 	}: {
 		title: string;
 		children: Snippet;
@@ -23,15 +25,16 @@
 		 * apply classes to the `div` that wraps your `children`
 		 */
 		class?: string;
-	} = $props();
+	} & HTMLFormAttributes = $props();
 </script>
 
 <ModalContent0 {title} {withMargins}>
-	<div
-		class="mt-1 text-sm text-gray-500 dark:text-gray-300 markdown flex-1 min-h-0 {contentFlex
+	<form
+		{...rest}
+		class="mt-1 text-sm text-gray-500 dark:text-gray-300 flex-1 min-h-0 {contentFlex
 			? 'flex flex-col'
 			: ''} {classList}"
 	>
 		{@render children()}
-	</div>
+	</form>
 </ModalContent0>

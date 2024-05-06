@@ -10,6 +10,12 @@
 		"sourceMap": true,
 		"strict": true,
 		"module": "NodeNext",
-		"moduleResolution": "NodeNext"
-	}
+		"moduleResolution": "NodeNext",
+		"typeRoots": [
+			"src/lib/types"
+		]
+	},
+	"exclude": [
+		"static/**/*.js"
+	]
 }

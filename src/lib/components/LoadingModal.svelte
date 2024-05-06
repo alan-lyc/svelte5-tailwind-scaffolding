@@ -90,6 +90,8 @@
 	bind:visible
 	bind:animateClose
 	buttons={states.cancel ? buttons : undefined}
+	oncancel={async () => await states.cancel?.()}
+	preventEscape={!!states.cancel}
 	alwaysFullWidth
 >
 	<ModalContent title={states.title} contentFlexCol>
@@ -110,7 +112,8 @@
 		{@html states.text}
 		{/if}
 		{#if states.logs.length}
-			<pre class="overflow-auto flex-1 min-h-0" bind:this={log}><code bind:this={code}
+			<span>Logs:</span>
+			<pre class="overflow-auto flex-1 min-h-0 max-h-[448px]" bind:this={log}><code bind:this={code}
 					>{#each states.logs as log}{log}<br />{/each}</code
 				></pre>
 		{/if}
