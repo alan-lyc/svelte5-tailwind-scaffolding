@@ -2,7 +2,12 @@
 
 This is just a simple package to bootstrap my personal projects with Svelte 5 and TailwindCSS. Nothing special.
 
-It provides functions for displaying modals and it displays error automatically, ***but these features require `HTMLDialogElement`***. There are also utilities for buttons, and it automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
+It provides functions for displaying modals and it displays error automatically, ***but these features require `HTMLDialogElement`***. There are also utilities for buttons, input, and autocompleted input. It also automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
+
+## Feature Required
+1. `Modal` requires `HTMLDialogElement` and `margin-inline-start`
+2. `Buttons` have no special requirements
+3. `InputText`
 
 ## Setup
 ### 1. Install Everything
@@ -72,6 +77,7 @@ export default {
         title: "Congratulations!",
         md: "You have completed setting up the scaffolding!",
         actions: ["OK"],
+		defaultReturn: undefined,
     })
 }}>
     OK Modal

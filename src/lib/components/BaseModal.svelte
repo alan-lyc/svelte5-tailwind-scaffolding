@@ -48,7 +48,10 @@
 
 		// 'class'?: string
 		children: Snippet<[typeof animateClose]>;
-		oncancel: (e: Event & { currentTarget: HTMLDialogElement }) => void | Promise<void>;
+		/**
+		 * if `preventEscape` is set, this is ignored
+		 */
+		oncancel?: (e: Event & { currentTarget: HTMLDialogElement }) => void | Promise<void>;
 		preventEscape?: boolean;
 	} = $props();
 
@@ -88,9 +91,11 @@
 	"
 	style="--sc-tr-d: {duration}ms"
 	oncancel={async (e) => {
-		if (preventEscape) e.preventDefault();
-		else await animateClose();
-		await oncancel?.(e);
+		if (preventEscape || !oncancel) e.preventDefault();
+		else {
+			await animateClose();
+			await oncancel(e);
+		}
 	}}
 >
 	<div

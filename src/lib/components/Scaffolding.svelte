@@ -61,7 +61,8 @@
 						primary: true,
 						destructive: false
 					}
-				]
+				],
+				defaultReturn: undefined,
 			});
 		} catch (e) {
 			

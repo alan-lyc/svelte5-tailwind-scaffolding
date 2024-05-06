@@ -118,7 +118,21 @@ export type PredefinedModal<T> = {
 	__resolve?: (ret: T) => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	__reject?: (reason?: any) => void;
-};
+} & ({
+	/**
+	 * the default value to return if the user press `ESC`
+	 */
+	defaultReturn: T
+	preventEscape?: false
+} | {
+	defaultReturn?: undefined
+	/**
+	 * if the user press `ESC`, do `e.preventDefault()` to prevent the dialog from closing
+	 * 
+	 * **Warning:** there was a bug in Chrome where `e.preventDefault()` occasionally does not work on `cancel` event (which is ired when `Esc` is pressed). Prepare to handle `undefined` in case `e.preventDefault()` does not work.
+	 */
+	preventEscape: true
+});
 export type CustomModal<T> = {
 	type: 'custom';
 	/**
@@ -464,9 +478,17 @@ export async function block<T>(config: LoadingModal<T>): Promise<T> {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export module modal {
 	export class ModalBuilder<R = never> {
-		constructor(public type: PredefinedModal<unknown>['type'], public __title: string = "", public __md: string = "", public __actions: ModalAction<R>[] = []) {}
+		constructor(public type: PredefinedModal<unknown>['type'], public __title: string = "", public __md: string = "", public __actions: ModalAction<R>[] = [], public __defaultReturn: R | undefined = undefined, public __preventEscape = false) {}
 		title(text: string) { this.__title = text; return this; }
-		content(md: string) { this.__md = md; return new ActionBuilder_Start<R>(this) }
+		content(md: string) { this.__md = md; return this }
+		defaultReturn<T extends bigint>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn<T extends number>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn<T extends boolean>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn<T extends object>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn<T extends string>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn<T>(returns: T): ActionBuilder_Start<R | T>;
+		defaultReturn(returns: R) { this.__defaultReturn = returns; return new ActionBuilder_Start<R>(this) }
+		preventEscape() { this.__preventEscape = true; return new ActionBuilder_Start<R>(this) }
 	}
 	export class ActionBuilder_Start<R> {
 		constructor(public __parent: ModalBuilder<R>) {}
@@ -476,6 +498,7 @@ export module modal {
 		action<T extends boolean>(text: string, returns: T): ActionBuilder<R | T>;
 		action<T extends object>(text: string, returns: T): ActionBuilder<R | T>;
 		action<T extends string>(text: string, returns: T): ActionBuilder<R | T>;
+		action<T>(text: string, returns: T): ActionBuilder_Start<R | T>;
 		action(text: string, returns: R): ActionBuilder<R>;
 		action(text: string, returns?: R) {
 			const a = {
@@ -486,12 +509,27 @@ export module modal {
 			return new ActionBuilder<R>(this.__parent, a);
 		}
 		async show(): Promise<R> {
-			return await modal({
-				type: this.__parent.type,
-				md: this.__parent.__md,
-				title: this.__parent.__title,
-				actions: this.__parent.__actions,
-			})
+			if (this.__parent.__preventEscape) {
+				return await modal({
+					type: this.__parent.type,
+					md: this.__parent.__md,
+					title: this.__parent.__title,
+					actions: this.__parent.__actions,
+					defaultReturn: undefined,
+					preventEscape: true,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				}) as any;
+			} else {
+				return await modal({
+					type: this.__parent.type,
+					md: this.__parent.__md,
+					title: this.__parent.__title,
+					actions: this.__parent.__actions,
+					defaultReturn: this.__parent.__defaultReturn,
+					preventEscape: false,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				}) as any;
+			}
 		}
 	}
 	export class ActionBuilder<R> extends ActionBuilder_Start<R> {

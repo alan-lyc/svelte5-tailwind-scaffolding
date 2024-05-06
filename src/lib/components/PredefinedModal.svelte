@@ -43,7 +43,10 @@
 	});
 </script>
 
-<BaseModal bind:dialog bind:visible>
+<BaseModal bind:dialog bind:visible preventEscape={states.preventEscape} oncancel={() => {
+	console.log("this")
+	states.__resolve!(states.defaultReturn)
+}}>
 	<ModalIcon type={states.type} />
 	<ModalContent title={states.title} withMargins>
 		{@html rendered}

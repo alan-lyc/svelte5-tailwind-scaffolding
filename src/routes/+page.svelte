@@ -35,7 +35,8 @@
 						text: 'OK',
 						primary: true
 					}
-				]
+				],
+				defaultReturn: true,
 			});
 		}}
 	>
@@ -59,7 +60,8 @@
 						primary: true,
 						returns: true
 					}
-				]
+				],
+				preventEscape: true,
 			});
 			await modal({
 				type: allow ? 'ok' : 'error',
@@ -70,7 +72,8 @@
 						text: 'OK',
 						primary: true
 					}
-				]
+				],
+				defaultReturn: undefined,
 			});
 		}}
 	>
@@ -99,7 +102,8 @@
 						text: 'OK',
 						primary: true
 					}
-				]
+				],
+				defaultReturn: undefined,
 			});
 		}}
 	>
@@ -122,7 +126,8 @@
 						text: 'No',
 						primary: true
 					}
-				]
+				],
+				defaultReturn: undefined,
 			});
 		}}
 	>
@@ -144,7 +149,8 @@
 						primary: true,
 						destructive: true
 					}
-				]
+				],
+				defaultReturn: undefined,
 			});
 		}}
 	>
@@ -200,6 +206,7 @@
 				.builder('confirm')
 				.title('Are you sure?')
 				.content('Do you want to download an asset (25 MB)?')
+				.defaultReturn(undefined)
 				.action('No')
 				.action('Yes', true)
 				.primary()
@@ -229,7 +236,8 @@
 					type: 'ok',
 					title: 'Done',
 					md: 'The file has been completely downloaded',
-					actions: ['OK']
+					actions: ['OK'],
+					defaultReturn: undefined,
 				});
 		}}
 	>
@@ -293,6 +301,7 @@
 					.builder('ok')
 					.title('Credentials')
 					.content(`Your username is \`${_.escape(user)}\`, and your password is \`${pwd}\``)
+					.defaultReturn(undefined)
 					.action('OK')
 					.show();
 		}}
