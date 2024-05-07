@@ -3,6 +3,8 @@
 	A ready-to-use modal for you to build custom functions on top of it.
 	
 	It is supposed to provide a default style, and you are not supposed to build your own style for it.
+
+	**Require `HTMLDialogElement`** (Baseline 2022)
 -->
 <script lang="ts">
 	import { timeout } from '../util.js';

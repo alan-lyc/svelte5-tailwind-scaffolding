@@ -168,7 +168,9 @@ export type CustomModal<T> = {
 };
 
 /**
- * Create a modal procedurally
+ * Display a modal and asynchronously wait for it to return
+ * 
+ * **Require `HTMLDialogElement`** (Baseline 2022)
  * 
  * ## Example
  * An honest cookies modal
@@ -359,6 +361,8 @@ export type LoadingModal<T> = {
 /**
  * Perform an asynchronous task, blocking any user interaction with a top-layer loading modal while during so.
  *
+ * **Require `HTMLDialogElement`** (Baseline 2022)
+ * 
  * The block returns and the modal disappears when, and only when:
  * - the task returns
  * - the task throws
@@ -634,6 +638,8 @@ export module modal {
 
 	/**
 	 * A potentially more user-friendly way to create a modal
+	 * 
+	 * **Require `HTMLDialogElement`** (Baseline 2022)
 	 * 
 	 * **Note:** don't pass `$state`s to this builder. They won't work.
 	 * @param type `"ok" | "warning" | "error" | "confirm"`

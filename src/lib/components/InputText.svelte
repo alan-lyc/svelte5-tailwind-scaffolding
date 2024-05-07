@@ -47,7 +47,7 @@
 			}
 		}
 	})
-	const type = $derived(untrack(() => _type))
+	const type = $state.snapshot(_type);
 </script>
 
 <input

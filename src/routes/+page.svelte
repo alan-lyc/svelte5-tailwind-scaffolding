@@ -318,6 +318,7 @@
 		class="max-w-sm !mt-0"
 		source={countries}
 		showAllValues
+		autoselect
 	/>
 	<h3 class="font-bold text-lg">2. Buttons</h3>
 	<div class="flex gap-2 !mt-0 pt-1">
