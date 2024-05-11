@@ -5,16 +5,23 @@
 	import '$lib/common.css';
 	import { timeout } from '$lib/util.js';
 	import Button from '$lib/components/Button.svelte';
-	import { markErrorAsHandled, formatDownloadRate, toHHMMSS as formatDuration } from '$lib/util.js';
+	import { markErrorAsHandled } from '$lib/util.js';
 	import axios, { AxiosError } from 'axios';
 	import BaseModal from '$lib/components/BaseModal.svelte';
-	import ModalContent from '$lib/components/ModalContent.svelte';
 	import InputText from '$lib/components/InputText.svelte';
 	import Label from '$lib/components/Label.svelte';
 	import _ from 'lodash';
 	import ModalContentForm from '$lib/components/ModalContentForm.svelte';
 	import Autocomplete from '$lib/components/Autocomplete.svelte';
 	import { countries } from './countries.js';
+	import Table from '$lib/components/table/Table.svelte';
+	import TableHead from '$lib/components/table/TableHead.svelte';
+	import TableRow from '$lib/components/table/TableRow.svelte';
+	import TableHeadCell from '$lib/components/table/TableHeadCell.svelte';
+	import TableBody from '$lib/components/table/TableBody.svelte';
+	import TableCell from '$lib/components/table/TableCell.svelte';
+	import TableFoot from '$lib/components/table/TableFoot.svelte';
+	import TableCaption from '$lib/components/table/TableCaption.svelte';
 </script>
 
 <Scaffolding />
@@ -312,13 +319,14 @@
 	<h2 class="font-bold text-xl">Other Utilities</h2>
 	<h3 class="font-bold text-lg">1. Autocomplete</h3>
 	<Autocomplete
-		insetLabel
+		inset-label
 		label="Countries"
 		id="countries"
 		class="max-w-sm !mt-0"
 		source={countries}
-		showAllValues
+		show-all-values
 		autoselect
+		localization-assistive-hint={""}
 	/>
 	<h3 class="font-bold text-lg">2. Buttons</h3>
 	<div class="flex gap-2 !mt-0 pt-1">
@@ -334,5 +342,131 @@
 			{@const ref = { value: "" }}	<!-- just don't want to go to the top, you know? -->
 			<InputText bind:value={ref.value} class="w-96" />
 		</Label>
+	</div>
+	<div>
+		<h3 class="font-bold text-lg">4. Tables</h3>
+		<Table class="mt-2 table-auto">
+			<TableCaption>
+				The products we sell
+			</TableCaption>
+			<colgroup>
+				<col>
+				<col>
+				<col class="whitespace-nowrap text-nowrap min-w-full">
+				<col>
+			</colgroup>
+			<TableHead>
+				<TableRow>
+					<TableHeadCell>
+						Product ID
+					</TableHeadCell>
+					<TableHeadCell>
+						Product Name
+					</TableHeadCell>
+					<TableHeadCell>
+						Last Modified
+					</TableHeadCell>
+					<TableHeadCell>
+						Profit
+					</TableHeadCell>
+				</TableRow>
+			</TableHead>
+			<TableBody>
+				<TableRow>
+					<TableCell>
+						00002
+					</TableCell>
+					<TableCell>
+						Orange
+					</TableCell>
+					<TableCell class="whitespace-nowrap">
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+				<TableRow>
+					<TableCell>
+						00003
+					</TableCell>
+					<TableCell>
+						Grapes
+					</TableCell>
+					<TableCell>
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+				<TableRow>
+					<TableCell>
+						00004
+					</TableCell>
+					<TableCell>
+						Pineapple
+					</TableCell>
+					<TableCell>
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+				<TableRow>
+					<TableCell>
+						00005
+					</TableCell>
+					<TableCell>
+						Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur blanditiis tempore molestiae odit, architecto recusandae perspiciatis atque placeat exercitationem eos id ullam sapiente earum commodi asperiores ipsa sit! Laudantium, adipisci.
+					</TableCell>
+					<TableCell>
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+				<TableRow>
+					<TableCell>
+						00006
+					</TableCell>
+					<TableCell>
+						Mango
+					</TableCell>
+					<TableCell>
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+				<TableRow>
+					<TableCell>
+						00007
+					</TableCell>
+					<TableCell>
+						Watermelon
+					</TableCell>
+					<TableCell>
+						1 Jan 1970 00:00
+					</TableCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+			</TableBody>
+			<!-- <TableFoot>
+				<TableRow>
+					<TableHeadCell colspan={3} style="text-align: initial;">
+						Total Profit
+					</TableHeadCell>
+					<TableCell>
+						$0.00
+					</TableCell>
+				</TableRow>
+			</TableFoot> -->
+		</Table>
 	</div>
 </main>

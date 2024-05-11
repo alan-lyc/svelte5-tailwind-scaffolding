@@ -17,7 +17,7 @@ declare module "accessible-autocomplete" {
 		onConfirm?: () => void,
 		required?: boolean,
 		showAllValues?: boolean,
-		showNoOptionsFound?: string,
+		showNoOptionsFound?: boolean,
 		templates?: {
 			inputValue: (currentlySelectedSuggestion: string) => string,
 			suggestion: (suggestionToBeDisplayed: string) => string,

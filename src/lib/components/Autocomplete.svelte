@@ -1,23 +1,34 @@
 <!--
 	@component
-	an autocomplete component, suitable for form inputs
+	an autocomplete component powered by [alphagov/accessible-autocomplete](https://github.com/alphagov/accessible-autocomplete?tab=readme-ov-file), suitable for form inputs
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import './autocomplete.css';
 	import _ from 'lodash';
-	import { timeout } from '$lib/util.js';
 
 	let {
 		id,
 		label,
 		class: classList,
-		insetLabel,
+		'inset-label': insetLabel,
 		source,
 		onchange,
 		autoselect,
-		withoutNormalization,
+		'without-normalization': withoutNormalization,
 		onconfirm,
+		'localization-no-results': tNoResults = 'No results found',
+		'localization-status-query-too-short': tStatusQueryTooShort,
+		'localization-status-no-results': tStatusNoResults = 'No search results',
+		'localization-status-selected-option': tStatusSelectedOption,
+		'localization-status-results': tStatusResults,
+		'localization-assistive-hint': tAssistiveHint = 'When autocomplete results are available use up and down arrows to review and enter to select.  Touch device users, explore by touch or with swipe gestures.',
+		'show-all-values': showAllValues,
+		'show-no-options-found': showNoOptionsFound,
+		'menu-attributes': menuAttributes,
+		'min-length': minLength,
+		'confirm-on-blur': confirmOnBlur,
+		'default-value': defaultValue,
 		...rest
 	}: Omit<
 		Parameters<(typeof import('accessible-autocomplete'))['default']>[0],
@@ -26,10 +37,22 @@
 		| 'cssNamespace'
 		| 'menuClasses'
 		| 'element'
-		| 'dropDownArrow'
+		| 'dropdownArrow'
 		| 'source'
 		| 'autoselect'
 		| 'onConfirm'
+		| 'tNoResults' 
+		| 'tStatusQueryTooShort' 
+		| 'tStatusNoResults' 
+		| 'tStatusSelectedOption' 
+		| 'tStatusResults' 
+		| 'tAssistiveHint'
+		| 'showAllValues'
+		| 'showNoOptionsFound'
+		| 'menuAttributes'
+		| 'minLength'
+		| 'confirmOnBlur'
+		| 'defaultValue'
 	> & {
 		/**
 		 * a *static, constant, non-reactive, unchanging* `id` for the `<input>` and the `<label for="...">`
@@ -59,7 +82,7 @@
 		 * *------------------------*
 		 * ```
 		 */
-		insetLabel?: boolean;
+		'inset-label'?: boolean;
 		/**
 		 * the suggestions *in HTML* (or a function that generates them), for your autocomplete.
 		 * 
@@ -70,7 +93,7 @@
 		 * If this field is a function, the `query` passed to the function is NFKC normalized. To avoid normalization, set `withoutNormalization` to true.
 		 */
 		source: string[] | ((query: string) => string[] | Promise<string[]>);
-		withoutNormalization?: boolean;
+		'without-normalization'?: boolean;
 		/**
 		 * a function to be executed *before* the updating the autocomplete suggestions
 		 */
@@ -82,6 +105,18 @@
 		 */
 		autoselect?: boolean;
 		onconfirm?: () => void;
+		'localization-no-results'?: string,
+		'localization-status-query-too-short'?: (minQueryLength: number) => string,
+		'localization-status-no-results'?: string,
+		'localization-status-selected-option'?: (selectedOption: string, length: number, index: number) => string,
+		'localization-status-results'?: (numberOfAvailableOptions: number, contentSelectedOption: string) => string,
+		'localization-assistive-hint'?: string,
+		'show-all-values'?: boolean,
+		'show-no-options-found'?: boolean,
+		'menu-attributes'?: string,
+		'min-length'?: number,
+		'confirm-on-blur'?: boolean,
+		'default-value'?: string,
 	} = $props();
 
 	let container: HTMLDivElement | undefined = $state(undefined);
@@ -125,6 +160,18 @@
 					}
 				},
 				autoselect,
+				tNoResults: () => tNoResults,
+				tStatusQueryTooShort,
+				tStatusNoResults: () => tStatusNoResults,
+				tStatusSelectedOption,
+				tStatusResults,
+				tAssistiveHint: () => tAssistiveHint,
+				showAllValues,
+				showNoOptionsFound,
+				menuAttributes,
+				minLength,
+				confirmOnBlur,
+				defaultValue,
 				...rest
 			});
 		}
@@ -135,5 +182,8 @@
 	<label for={id} class="font-semibold text-sm {insetLabel ? 'ms-2' : ''}">
 		{label}
 	</label>
-	<div bind:this={container} class="sf_autocomplete mt-1 h-[42px] {autoselect ? 'autoselect' : ''}"></div>
+	<div
+		bind:this={container}
+		class="sf_autocomplete mt-1 h-[42px] {autoselect ? 'autoselect' : ''}"
+	></div>
 </div>

@@ -1,0 +1,125 @@
+.sf-table {
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+.sf-table td,
+.sf-table th {
+	@apply border-t;
+}
+.sf-table td,
+.sf-table th {
+	@apply border-r;
+}
+.sf-table td:first-child,
+.sf-table th:first-child {
+	@apply border-l;
+}
+.sf-table th {
+	@apply border-r;
+	border-color: inherit;
+}
+
+/* not using :is() is probably a bad idea */
+/* but if it works, don't fix it */
+
+/* with caption */
+.sf-table caption:first-child+thead tr:first-child td:last-child,
+.sf-table caption:first-child+tbody tr:first-child td:last-child,
+.sf-table caption:first-child+tfoot tr:first-child td:last-child,
+.sf-table caption:first-child+thead tr:first-child th:last-child,
+.sf-table caption:first-child+tbody tr:first-child th:last-child,
+.sf-table caption:first-child+tfoot tr:first-child th:last-child,
+/* with colgroup */
+.sf-table colgroup:first-child+thead tr:first-child td:last-child,
+.sf-table colgroup:first-child+tbody tr:first-child td:last-child,
+.sf-table colgroup:first-child+tfoot tr:first-child td:last-child,
+.sf-table colgroup:first-child+thead tr:first-child th:last-child,
+.sf-table colgroup:first-child+tbody tr:first-child th:last-child,
+.sf-table colgroup:first-child+tfoot tr:first-child th:last-child,
+/* with caption + colgroup */
+.sf-table caption:first-child+colgroup+thead tr:first-child td:last-child,
+.sf-table caption:first-child+colgroup+tbody tr:first-child td:last-child,
+.sf-table caption:first-child+colgroup+tfoot tr:first-child td:last-child,
+.sf-table caption:first-child+colgroup+thead tr:first-child th:last-child,
+.sf-table caption:first-child+colgroup+tbody tr:first-child th:last-child,
+.sf-table caption:first-child+colgroup+tfoot tr:first-child th:last-child,
+/* with colgroup + caption */
+.sf-table colgroup:first-child+caption+thead tr:first-child td:last-child,
+.sf-table colgroup:first-child+caption+tbody tr:first-child td:last-child,
+.sf-table colgroup:first-child+caption+tfoot tr:first-child td:last-child,
+.sf-table colgroup:first-child+caption+thead tr:first-child th:last-child,
+.sf-table colgroup:first-child+caption+tbody tr:first-child th:last-child,
+.sf-table colgroup:first-child+caption+tfoot tr:first-child th:last-child,
+/* without anything */
+.sf-table thead:first-child tr:first-child td:last-child,
+.sf-table tbody:first-child tr:first-child td:last-child,
+.sf-table tfoot:first-child tr:first-child td:last-child,
+.sf-table thead:first-child tr:first-child th:last-child,
+.sf-table tbody:first-child tr:first-child th:last-child,
+.sf-table tfoot:first-child tr:first-child th:last-child {
+	@apply rounded-se-lg;
+}
+/* with caption */
+.sf-table caption:first-child+thead tr:first-child td:first-child,
+.sf-table caption:first-child+tbody tr:first-child td:first-child,
+.sf-table caption:first-child+tfoot tr:first-child td:first-child,
+.sf-table caption:first-child+thead tr:first-child th:first-child,
+.sf-table caption:first-child+tbody tr:first-child th:first-child,
+.sf-table caption:first-child+tfoot tr:first-child th:first-child,
+/* with colgroup */
+.sf-table colgroup:first-child+thead tr:first-child td:first-child,
+.sf-table colgroup:first-child+tbody tr:first-child td:first-child,
+.sf-table colgroup:first-child+tfoot tr:first-child td:first-child,
+.sf-table colgroup:first-child+thead tr:first-child th:first-child,
+.sf-table colgroup:first-child+tbody tr:first-child th:first-child,
+.sf-table colgroup:first-child+tfoot tr:first-child th:first-child,
+/* with caption + colgroup */
+.sf-table caption:first-child+colgroup+thead tr:first-child td:first-child,
+.sf-table caption:first-child+colgroup+tbody tr:first-child td:first-child,
+.sf-table caption:first-child+colgroup+tfoot tr:first-child td:first-child,
+.sf-table caption:first-child+colgroup+thead tr:first-child th:first-child,
+.sf-table caption:first-child+colgroup+tbody tr:first-child th:first-child,
+.sf-table caption:first-child+colgroup+tfoot tr:first-child th:first-child,
+/* with colgroup + caption */
+.sf-table colgroup:first-child+caption+thead tr:first-child td:first-child,
+.sf-table colgroup:first-child+caption+tbody tr:first-child td:first-child,
+.sf-table colgroup:first-child+caption+tfoot tr:first-child td:first-child,
+.sf-table colgroup:first-child+caption+thead tr:first-child th:first-child,
+.sf-table colgroup:first-child+caption+tbody tr:first-child th:first-child,
+.sf-table colgroup:first-child+caption+tfoot tr:first-child th:first-child,
+/* without anything */
+.sf-table thead:first-child tr:first-child td:first-child,
+.sf-table tbody:first-child tr:first-child td:first-child,
+.sf-table tfoot:first-child tr:first-child td:first-child,
+.sf-table thead:first-child tr:first-child th:first-child,
+.sf-table tbody:first-child tr:first-child th:first-child,
+.sf-table tfoot:first-child tr:first-child th:first-child {
+	@apply rounded-ss-lg;
+}
+
+.sf-table thead:last-child tr:last-child td:last-child,
+.sf-table tbody:last-child tr:last-child td:last-child,
+.sf-table tfoot:last-child tr:last-child td:last-child,
+.sf-table thead:last-child tr:last-child th:last-child,
+.sf-table tbody:last-child tr:last-child th:last-child,
+.sf-table tfoot:last-child tr:last-child th:last-child {
+	@apply rounded-ee-lg;
+}
+
+.sf-table thead:last-child tr:last-child td:first-child,
+.sf-table tbody:last-child tr:last-child td:first-child,
+.sf-table tfoot:last-child tr:last-child td:first-child,
+.sf-table thead:last-child tr:last-child th:first-child,
+.sf-table tbody:last-child tr:last-child th:first-child,
+.sf-table tfoot:last-child tr:last-child th:first-child {
+	@apply rounded-es-lg;
+}
+
+.sf-table thead:last-child tr:last-child td,
+.sf-table tbody:last-child tr:last-child td,
+.sf-table tfoot:last-child tr:last-child td,
+.sf-table thead:last-child tr:last-child th,
+.sf-table tbody:last-child tr:last-child th,
+.sf-table tfoot:last-child tr:last-child th {
+	@apply border-b;
+}

@@ -5,9 +5,10 @@ This is just a simple package to bootstrap my personal projects with Svelte 5 an
 It provides functions for displaying modals and it displays error automatically, ***but these features require `HTMLDialogElement`***. There are also utilities for buttons, input, and autocompleted input. It also automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
 
 ## Feature Required
-1. `Modal` requires `HTMLDialogElement` and `margin-inline-start`
-2. `Buttons` have no special requirements
-3. `InputText`
+1. `modal`, `modal.builder`, `block`, and `BaseModal` requires `HTMLDialogElement` and `margin-inline-start`
+2. `Button` have no special requirements
+3. `InputText` have no special requirements
+4. `Autocomplete.autoselect` requires CSS `:has()` selector
 
 ## Setup
 ### 1. Install Everything
