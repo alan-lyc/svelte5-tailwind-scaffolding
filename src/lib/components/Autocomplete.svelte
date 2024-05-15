@@ -99,9 +99,12 @@
 		 */
 		onchange?: (query: string) => void | Promise<void>;
 		/**
-		 * select the first suggestion automatically, and confirm the selection when `blur` is fired
+		 * If set, the first suggestion is selected automatically.
 		 * 
 		 * **Require CSS `:has()` selector (Baseline 2023)**
+		 * 
+		 * ### Note
+		 * On mobile, this may not work (because if it worked, it would be impossible to *not* select the first option).
 		 */
 		autoselect?: boolean;
 		onconfirm?: () => void;
@@ -176,6 +179,30 @@
 			});
 		}
 	});
+
+	// $effect(() => {
+	// 	if (container) {
+	// 		const elements: {
+	// 			input: HTMLInputElement | null,
+	// 			menu: HTMLUListElement | undefined,
+	// 		} = {
+	// 			input: null,
+	// 			menu: undefined,
+	// 		}
+	// 		document.body.addEventListener("click", (event) => {
+	// 			if (container) {
+	// 				elements.input = container.getElementsByTagName("input").namedItem(id);
+	// 				elements.menu = [...container.getElementsByTagName("ul")].find(e => e.classList.contains("autocomplete__menu--visible"));
+	// 				if (elements.input && elements.menu) {
+	// 					if (event.target instanceof Node && !container?.contains(event.target)) {
+	// 				console.log("here")
+	// 						elements.input?.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+	// 					}
+	// 				}
+	// 			}
+	// 		})
+	// 	}
+	// })
 </script>
 
 <div class={classList}>

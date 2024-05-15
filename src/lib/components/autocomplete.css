@@ -14,12 +14,13 @@
 	position: absolute;
 }
 
-.autocomplete__input--default {
-	/* padding: 5px; */
-}
+/* .autocomplete__input--default {
+	padding: 5px;
+} */
 
 .autocomplete__input--focused {
-	@apply focus:ring-2 focus:dark:ring-2 focus:ring-inset focus:ring-indigo-600 focus:invalid:ring-indigo-600 invalid:dark:ring-2 invalid:ring-red-600 outline outline-offset-1 outline-black dark:outline-white;
+	@apply focus:ring-2 focus:dark:ring-2 focus:ring-inset focus:ring-indigo-600 focus:invalid:ring-indigo-600 invalid:dark:ring-2 invalid:ring-red-600 !outline outline-offset-1 outline-black dark:outline-white;
+	outline-width: 1px !important;
 }
 
 .autoselect .autocomplete__hint {

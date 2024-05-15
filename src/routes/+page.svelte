@@ -164,7 +164,7 @@
 		Destructive Action (2)
 	</Button>
 
-	{#snippet customModal(resolve: (returns: "yes" | "no") => void)}
+	{#snippet customModal()}
 		<div class="w-[100dvw] h-[100dvh] bg-white text-black">Hello, world!</div>
 	{/snippet}
 	<Button
@@ -209,6 +209,20 @@
 	<Button
 		class="block"
 		onclick={async () => {
+			await block({
+				type: 'loading',
+				mode: 'determinate',
+				async task(states) {
+					throw await fetch("/non-existant")
+				}
+			});
+		}}
+	>
+		Download (404) (fetch)
+	</Button>
+	<Button
+		class="block"
+		onclick={async () => {
 			const result = await modal
 				.builder('confirm')
 				.title('Are you sure?')
@@ -249,6 +263,73 @@
 		}}
 	>
 		Download Asset (fake, 120s)
+	</Button>
+	<Button
+		class="block"
+		onclick={async () => {
+			const result = await modal
+				.builder('confirm')
+				.title('Are you sure?')
+				.content('Do you want to download an asset (25 MB)?')
+				.defaultReturn(undefined)
+				.action('No')
+				.action('Yes', true)
+				.primary()
+				.withIndeterminateLoadingScreen(async (states) => {
+					states.setTitle('Downloading Assets...');
+					// states.step(0).of(1).completed();
+					let s = 120;
+					const cancel = { value: false };
+					states.setCancelHandler(() => {
+						cancel.value = true;
+					});
+					// states.setDescription(
+					// 	'Downloading asset'
+					// );
+					for (let i = 0; i < s; i++) {
+						if (cancel.value) throw Error('cancelled');
+						await timeout(1000);
+						states.log(`Time elapsed ${i + 1} seconds`);
+					}
+				})
+				.possibleErrors(AxiosError) // when cancelled, or some network error
+				.closeOnError()
+				.show();
+			if (result)
+				await modal({
+					type: 'ok',
+					title: 'Done',
+					md: 'The file has been completely downloaded',
+					actions: ['OK'],
+					defaultReturn: undefined,
+				});
+		}}
+	>
+		Download Asset (Indeterminate, 120s)
+	</Button>
+	<Button
+		class="block"
+		onclick={() => {
+			throw markErrorAsHandled({ message: "[Markdown](https://www.markdownguide.org/) works"});
+		}}
+	>
+		String Error
+	</Button>
+	<Button
+		class="block"
+		onclick={() => {
+			throw markErrorAsHandled({ message: "Session Expired. [Sign In](/login) to continue"});
+		}}
+	>
+		Session Expired
+	</Button>
+	<Button
+		class="block"
+		onclick={() => {
+			throw markErrorAsHandled({ strange_error: "As strange as it can get ... maybe```"});
+		}}
+	>
+		Strange Error
 	</Button>
 
 	{#snippet login(resolve: (str: [string, string] | undefined) => void)}
@@ -329,7 +410,7 @@
 		localization-assistive-hint={""}
 	/>
 	<h3 class="font-bold text-lg">2. Buttons</h3>
-	<div class="flex gap-2 !mt-0 pt-1">
+	<div class="flex gap-2 !mt-0 pt-1 overflow-auto">
 		<Button primary>Primary</Button>
 		<Button>Secondary</Button>
 		<Button primary destructive>Primary, Destructive</Button>
@@ -339,13 +420,13 @@
 		<h3 class="font-bold text-lg">3. Normal Input</h3>
 		<Label>
 			<span class="ms-2">Input</span>
-			{@const ref = { value: "" }}	<!-- just don't want to go to the top, you know? -->
-			<InputText bind:value={ref.value} class="w-96" />
+			{@const ref = { value: "" }}
+			<InputText bind:value={ref.value} class="w-full max-w-sm" />
 		</Label>
 	</div>
-	<div>
+	<div class="overflow-auto">
 		<h3 class="font-bold text-lg">4. Tables</h3>
-		<Table class="mt-2 table-auto">
+		<Table class="mt-2 table-auto [&_tr>td:nth-child(3)]:whitespace-nowrap [&_tr>:is(td,th):first-child]:whitespace-nowrap">
 			<TableCaption>
 				The products we sell
 			</TableCaption>
@@ -379,7 +460,7 @@
 					<TableCell>
 						Orange
 					</TableCell>
-					<TableCell class="whitespace-nowrap">
+					<TableCell>
 						1 Jan 1970 00:00
 					</TableCell>
 					<TableCell>
@@ -419,7 +500,7 @@
 						00005
 					</TableCell>
 					<TableCell>
-						Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur blanditiis tempore molestiae odit, architecto recusandae perspiciatis atque placeat exercitationem eos id ullam sapiente earum commodi asperiores ipsa sit! Laudantium, adipisci.
+						Apple
 					</TableCell>
 					<TableCell>
 						1 Jan 1970 00:00
@@ -457,7 +538,7 @@
 					</TableCell>
 				</TableRow>
 			</TableBody>
-			<!-- <TableFoot>
+			<TableFoot>
 				<TableRow>
 					<TableHeadCell colspan={3} style="text-align: initial;">
 						Total Profit
@@ -466,7 +547,7 @@
 						$0.00
 					</TableCell>
 				</TableRow>
-			</TableFoot> -->
+			</TableFoot>
 		</Table>
 	</div>
 </main>

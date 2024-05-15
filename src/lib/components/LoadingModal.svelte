@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { LoadingStateImpl } from '$lib/modal.svelte.js';
+	import type { LoadingStateImpl } from '$lib/modal.types.ts';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import BaseModal from './BaseModal.svelte';
 	import Button from './Button.svelte';
 	import ModalContent from './ModalContent.svelte';
+	import { LoaderCircle } from 'lucide-svelte';
 
 	let {
 		states = $bindable(),
@@ -71,6 +72,15 @@
 			}
 		}
 	})
+
+	function height(node: Element) {
+		const o = +getComputedStyle(node).height.replace(/px$/, '');
+
+		return {
+			duration: 200,
+			css: (t: number) => `height: ${t * o}px;`
+		};
+	}
 </script>
 
 {#snippet buttons(animateClose: () => Promise<void>)}
@@ -104,18 +114,20 @@
 			></progress>
 		</div>
 		{:else}
-		<div class="flex items-center gap-2">
-			This may take a while {dots}
+		<div class="flex items-center gap-1">
+			<LoaderCircle class="h-4 animate-[spin_1s_ease-in-out_infinite]" /> {states.localizationImpl.activityIndicatorText}
 		</div>
 		{/if}
 		{#if states.text}
 		{@html states.text}
 		{/if}
 		{#if states.logs.length}
-			<span>Logs:</span>
-			<pre class="overflow-auto flex-1 min-h-0 max-h-[448px]" bind:this={log}><code bind:this={code}
+		<section in:height style="text-align: initial;">
+			<span>{states.localizationImpl.logsLabel}</span>
+			<pre class="overflow-auto flex-1 min-h-[256px] h-[256px] max-h-[256px] mt-2" bind:this={log}><code bind:this={code}
 					>{#each states.logs as log}{log}<br />{/each}</code
 				></pre>
+		</section>
 		{/if}
 	</ModalContent>
 </BaseModal>

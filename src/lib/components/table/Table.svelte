@@ -9,7 +9,7 @@
 	import type { Snippet } from 'svelte';
 	import "./table.css"
 	import type { HTMLTableAttributes } from 'svelte/elements';
-	let { class: classList, children, ...rest }: HTMLTableAttributes & { children: Snippet } = $props();
+	let { class: classList, children, 'no-column-border': noColumnBorder, 'rounded-none': roundedNone, ...rest }: HTMLTableAttributes & { children: Snippet, 'no-column-border'?: boolean, 'rounded-none'?: boolean } = $props();
 </script>
 
 <table class="sf-table caption-bottom appearance-none dark:border-neutral-500 border-collapse overflow-hidden {classList}" {...rest}>

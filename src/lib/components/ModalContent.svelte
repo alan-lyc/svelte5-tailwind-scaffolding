@@ -28,7 +28,7 @@
 
 <ModalContent0 {title} {withMargins}>
 	<div
-		class="mt-1 text-sm text-gray-500 dark:text-gray-300 markdown flex-1 min-h-0 {contentFlex
+		class="text-sm text-gray-500 dark:text-gray-300 markdown flex-1 min-h-0 {contentFlex
 			? 'flex flex-col'
 			: ''} {classList}"
 	>

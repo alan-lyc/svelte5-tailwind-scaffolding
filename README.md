@@ -2,13 +2,12 @@
 
 This is just a simple package to bootstrap my personal projects with Svelte 5 and TailwindCSS. Nothing special.
 
-It provides functions for displaying modals and it displays error automatically, ***but these features require `HTMLDialogElement`***. There are also utilities for buttons, input, and autocompleted input. It also automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
+It provides functions for displaying modals and it displays error automatically. There are also utilities for buttons, input, and autocompleted input. It also automatically apply `bg-neutral-900` and `text-white` to `body` in dark mode.
 
-## Feature Required
-1. `modal`, `modal.builder`, `block`, and `BaseModal` requires `HTMLDialogElement` and `margin-inline-start`
-2. `Button` have no special requirements
-3. `InputText` have no special requirements
-4. `Autocomplete.autoselect` requires CSS `:has()` selector
+## Browser Requirements
+1. `modal`, `modal.builder`, `block`, and `BaseModal` requires `HTMLDialogElement` (Baseline 2022) and the CSS `*-inline-start`, `*-inline-end` family of properties (Baseline 2020)
+2. `Autocomplete.autoselect` requires the CSS `:has()` selector
+3. `Table` requires the CSS `*-inline-start`, `*-inline-end` family of properties
 
 ## Setup
 ### 1. Install Everything

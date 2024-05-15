@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { block, type PredefinedModal } from '$lib/modal.svelte.js';
+	import type { PredefinedModal } from "$lib/modal.types.ts"
+	import { block } from '$lib/modal.svelte.js';
 	import { onMount } from 'svelte';
 	import BaseModal from './BaseModal.svelte';
 	import Button from './Button.svelte';
@@ -43,10 +44,15 @@
 	});
 </script>
 
-<BaseModal bind:dialog bind:visible preventEscape={states.preventEscape} oncancel={() => {
+<BaseModal
+	bind:dialog
+	bind:visible
+	preventEscape={states.preventEscape}
+	oncancel={() => {
 	console.log("this")
 	states.__resolve!(states.defaultReturn)
-}}>
+}}
+>
 	<ModalIcon type={states.type} />
 	<ModalContent title={states.title} withMargins>
 		{@html rendered}
@@ -63,52 +69,52 @@
 				destructive={realAction.destructive}
 				{disabled}
 				onclick={async () => {
-			disabled = true;
-			let result = true;
-			try {
-				if ("loadingScreenMode" in realAction) {
-					// yeah we really have to duplicate them because TypeScript will not be happy if we don't
-					if (realAction.loadingScreenMode === "indeterminate") {
-						result = (await block({
-							type: "loading",
-							// title: realAction.loadingScreenTitle,
-							mode: realAction.loadingScreenMode,
-							task: realAction.onclick,
-						})) ?? true
-					} else if (realAction.loadingScreenMode === "determinate") {
-						result = (await block({
-							type: "loading",
-							// title: realAction.loadingScreenTitle,
-							mode: realAction.loadingScreenMode,
-							task: realAction.onclick,
-						})) ?? true
+					disabled = true;
+					let result = true;
+					try {
+						if ("loadingScreenMode" in realAction) {
+							// yeah we really have to duplicate them because TypeScript will not be happy if we don't
+							if (realAction.loadingScreenMode === "indeterminate") {
+								result = (await block({
+									type: "loading",
+									// title: realAction.loadingScreenTitle,
+									mode: realAction.loadingScreenMode,
+									task: realAction.onclick,
+								})) ?? true
+							} else if (realAction.loadingScreenMode === "determinate") {
+								result = (await block({
+									type: "loading",
+									// title: realAction.loadingScreenTitle,
+									mode: realAction.loadingScreenMode,
+									task: realAction.onclick,
+								})) ?? true
+							}
+						} else {
+							result = (await realAction.onclick?.()) ?? true;
+						}
+						if (result) {
+							await animateClose();
+							dialog?.close();
+						}
+						states.__resolve!(realAction.returns)
+					} catch (e) {
+						let error = e;
+						if (
+							realAction.possibleErrors && 
+							realAction.possibleErrors.length && 
+							realAction.possibleErrors.some((c) => error instanceof c)
+						) {
+							error = markErrorAsHandled(error);
+						}
+						if (realAction.closeOnError) {
+							await animateClose();
+							dialog?.close();
+							states.__reject!(error)
+						} else {
+							throw error;
+						}
 					}
-				} else {
-					result = (await realAction.onclick?.()) ?? true;
-				}
-				if (result) {
-					await animateClose();
-					dialog?.close();
-				}
-				states.__resolve!(realAction.returns)
-			} catch (e) {
-				let error = e;
-				if (
-					realAction.possibleErrors && 
-					realAction.possibleErrors.length && 
-					realAction.possibleErrors.some((c) => error instanceof c)
-				) {
-					error = markErrorAsHandled(error);
-				}
-				if (realAction.closeOnError) {
-					await animateClose();
-					dialog?.close();
-					states.__reject!(error)
-				} else {
-					throw error;
-				}
-			}
-		}}
+				}}
 			>
 				{realAction.text}
 			</Button>

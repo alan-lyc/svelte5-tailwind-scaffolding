@@ -2,26 +2,28 @@
 	border-collapse: separate;
 	border-spacing: 0px;
 }
-.sf-table td,
-.sf-table th {
+.sf-table:not(.no-inner-border) td,
+.sf-table:not(.no-inner-border) th {
 	@apply border-t;
-}
-.sf-table td,
-.sf-table th {
-	@apply border-r;
 }
 .sf-table td:first-child,
 .sf-table th:first-child {
-	@apply border-l;
+	@apply border-s;
 }
-.sf-table th {
-	@apply border-r;
+
+/* column border, border right */
+.sf-table:not(.no-inner-border) td {
+	@apply border-e;
+}
+.sf-table:not(.no-inner-border) th {
+	@apply border-e;
 	border-color: inherit;
 }
 
 /* not using :is() is probably a bad idea */
 /* but if it works, don't fix it */
 
+/* top-right */
 /* with caption */
 .sf-table caption:first-child+thead tr:first-child td:last-child,
 .sf-table caption:first-child+tbody tr:first-child td:last-child,
@@ -59,6 +61,8 @@
 .sf-table tfoot:first-child tr:first-child th:last-child {
 	@apply rounded-se-lg;
 }
+
+/* top-left */
 /* with caption */
 .sf-table caption:first-child+thead tr:first-child td:first-child,
 .sf-table caption:first-child+tbody tr:first-child td:first-child,
@@ -97,6 +101,7 @@
 	@apply rounded-ss-lg;
 }
 
+/* bottom-right */
 .sf-table thead:last-child tr:last-child td:last-child,
 .sf-table tbody:last-child tr:last-child td:last-child,
 .sf-table tfoot:last-child tr:last-child td:last-child,
@@ -106,6 +111,7 @@
 	@apply rounded-ee-lg;
 }
 
+/* bottom-left */
 .sf-table thead:last-child tr:last-child td:first-child,
 .sf-table tbody:last-child tr:last-child td:first-child,
 .sf-table tfoot:last-child tr:last-child td:first-child,
@@ -115,6 +121,7 @@
 	@apply rounded-es-lg;
 }
 
+/* border bottom */
 .sf-table thead:last-child tr:last-child td,
 .sf-table tbody:last-child tr:last-child td,
 .sf-table tfoot:last-child tr:last-child td,
@@ -122,4 +129,9 @@
 .sf-table tbody:last-child tr:last-child th,
 .sf-table tfoot:last-child tr:last-child th {
 	@apply border-b;
+}
+
+.sf-table.rounded-none td,
+.sf-table.rounded-none th {
+	@apply !rounded-none;
 }

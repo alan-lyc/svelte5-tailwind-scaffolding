@@ -28,7 +28,7 @@
 <div
 	class="{withMargins
 		? 'mt-3 sm:ml-4 sm:mt-0'
-		: ''} text-center sm:text-left flex-1 min-w-0 min-h-0 flex flex-col"
+		: ''} text-center sm:text-left flex-1 min-w-0 min-h-0 flex flex-col overflow-auto"
 >
 	<h2 class="text-lg sm:text-base font-semibold leading-6 text-gray-900 dark:text-white">
 		{title}
