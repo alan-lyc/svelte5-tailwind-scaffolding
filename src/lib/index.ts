@@ -1,5 +1,5 @@
 // Reexport your entry components here
-import 'common.css';
+import './common.css';
 
 export { default as Scaffolding } from './components/Scaffolding.svelte';
 export { default as Button } from './components/Button.svelte';
