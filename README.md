@@ -53,17 +53,24 @@ export default {
     </body>
 </html>
 ```
-### 4. `src/routes/+layout.svelte`
+### 4. `src/app.css`
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+### 5. `src/routes/+layout.svelte`
 ```svelte
 <script lang="ts">
     import { Scaffolding } from "@alanlyc/svelte5-tailwind-scaffolding"
+	import '../app.css'
 </script>
 
 <Scaffolding />
 
 <slot />
 ```
-### 5. `src/routes/+page.svelte`
+### 6. `src/routes/+page.svelte`
 ```svelte
 <script lang="ts">
     import { modal, Button } from "@alanlyc/svelte5-tailwind-scaffolding"
@@ -83,7 +90,7 @@ export default {
     OK Modal
 </Button>
 ```
-### 6. `npm run dev`
+### 7. `npm run dev`
 When you click the button, you may encounter a Vite optimization and see a hydration error. It should be fine to just wait for it to reload.
 
 ## Bonus: cloudflare
